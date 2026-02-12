@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 // Model represents the compose/reply textarea.

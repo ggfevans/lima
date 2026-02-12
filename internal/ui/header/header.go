@@ -2,7 +2,7 @@ package header
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 // Model represents the header bar.
@@ -44,7 +44,7 @@ func (m *Model) SetStyles(s styles.Styles) {
 
 // View renders the header.
 func (m Model) View() string {
-	logo := m.styles.AccentText.Render("LinkedIn-TUI")
+	logo := m.styles.AccentText.Render("Li-CLI")
 
 	var parts []string
 	parts = append(parts, logo)

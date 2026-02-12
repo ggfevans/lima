@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
-	"github.com/ggfevans/linkedin-tui/internal/util"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/util"
 )
 
 // Folder represents a sidebar folder entry.

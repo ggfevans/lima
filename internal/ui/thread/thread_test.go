@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ggfevans/linkedin-tui/internal/config"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/config"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 var ansiRe = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
@@ -113,6 +113,37 @@ func TestScrolling(t *testing.T) {
 	m.ScrollDown(5)
 	if m.AtTop() {
 		t.Error("expected AtTop()=false after ScrollDown")
+	}
+}
+
+func TestScrollPercent(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+
+	var msgs []Message
+	for i := 0; i < 50; i++ {
+		msgs = append(msgs, Message{
+			ID:        fmt.Sprintf("m%d", i),
+			Sender:    fmt.Sprintf("User %d", i),
+			Body:      fmt.Sprintf("Message %d", i),
+			Timestamp: "12:00",
+			IsOwn:     false,
+		})
+	}
+	m.SetMessages(msgs)
+
+	// At bottom, scroll percent should be 1.0
+	pct := m.ScrollPercent()
+	if pct < 0.99 {
+		t.Errorf("expected ScrollPercent()~1.0 at bottom, got %f", pct)
+	}
+
+	// At top, scroll percent should be 0.0
+	m.ScrollUp(10000)
+	pct = m.ScrollPercent()
+	if pct > 0.01 {
+		t.Errorf("expected ScrollPercent()~0.0 at top, got %f", pct)
 	}
 }
 

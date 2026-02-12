@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ggfevans/linkedin-tui/internal/config"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/config"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 var ansiRe = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
@@ -30,8 +30,8 @@ func TestDefaultState(t *testing.T) {
 	m.SetWidth(80)
 
 	output := stripAnsi(m.View())
-	if !strings.Contains(output, "LINKEDIN-TUI") {
-		t.Errorf("expected view to contain 'LINKEDIN-TUI', got:\n%s", output)
+	if !strings.Contains(output, "Li-CLI") {
+		t.Errorf("expected view to contain 'Li-CLI', got:\n%s", output)
 	}
 	if !strings.Contains(output, "DISCONNECTED") {
 		t.Errorf("expected view to contain 'DISCONNECTED', got:\n%s", output)

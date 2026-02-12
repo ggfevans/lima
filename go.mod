@@ -1,4 +1,4 @@
-module github.com/ggfevans/linkedin-tui
+module github.com/ggfevans/li-cli
 
 go 1.25.7
 
@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/rs/zerolog v1.34.0
 	go.mau.fi/mautrix-linkedin v0.2512.0
+	go.mau.fi/util v0.9.4
 )
 
 require (
@@ -33,7 +34,6 @@ require (
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	go.mau.fi/util v0.9.4 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/exp v0.0.0-20251209150349-8475f28825e9 // indirect
 	golang.org/x/net v0.48.0 // indirect

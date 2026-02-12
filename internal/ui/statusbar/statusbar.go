@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 // Hint represents a keybinding hint.

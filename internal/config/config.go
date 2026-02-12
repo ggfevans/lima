@@ -25,7 +25,7 @@ func ConfigDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(home, ".config", "linkedin-tui"), nil
+	return filepath.Join(home, ".config", "li-cli"), nil
 }
 
 // Load reads config from disk, returning defaults if file doesn't exist.

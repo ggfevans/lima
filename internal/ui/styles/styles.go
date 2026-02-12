@@ -2,7 +2,7 @@ package styles
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/linkedin-tui/internal/config"
+	"github.com/ggfevans/li-cli/internal/config"
 )
 
 // Styles holds all shared lipgloss styles derived from the active theme.

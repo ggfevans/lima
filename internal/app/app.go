@@ -10,17 +10,17 @@ import (
 	"github.com/rs/zerolog"
 	"go.mau.fi/mautrix-linkedin/pkg/linkedingo"
 
-	"github.com/ggfevans/linkedin-tui/internal/config"
-	"github.com/ggfevans/linkedin-tui/internal/linkedin"
-	"github.com/ggfevans/linkedin-tui/internal/ui/compose"
-	"github.com/ggfevans/linkedin-tui/internal/ui/convlist"
-	"github.com/ggfevans/linkedin-tui/internal/ui/header"
-	"github.com/ggfevans/linkedin-tui/internal/ui/layout"
-	"github.com/ggfevans/linkedin-tui/internal/ui/modal"
-	"github.com/ggfevans/linkedin-tui/internal/ui/statusbar"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
-	"github.com/ggfevans/linkedin-tui/internal/ui/thread"
-	"github.com/ggfevans/linkedin-tui/internal/util"
+	"github.com/ggfevans/li-cli/internal/config"
+	"github.com/ggfevans/li-cli/internal/linkedin"
+	"github.com/ggfevans/li-cli/internal/ui/compose"
+	"github.com/ggfevans/li-cli/internal/ui/convlist"
+	"github.com/ggfevans/li-cli/internal/ui/header"
+	"github.com/ggfevans/li-cli/internal/ui/layout"
+	"github.com/ggfevans/li-cli/internal/ui/modal"
+	"github.com/ggfevans/li-cli/internal/ui/statusbar"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/ui/thread"
+	"github.com/ggfevans/li-cli/internal/util"
 )
 
 // Model is the root application model.

@@ -1,14 +1,14 @@
-BINARY_NAME=linkedin-tui
+BINARY_NAME=li-cli
 BUILD_DIR=bin
 GO=go
 
 .PHONY: build run clean fmt vet
 
 build:
-	$(GO) build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/linkedin-tui/
+	$(GO) build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/li-cli/
 
 run:
-	$(GO) run ./cmd/linkedin-tui/
+	$(GO) run ./cmd/li-cli/
 
 clean:
 	rm -rf $(BUILD_DIR)

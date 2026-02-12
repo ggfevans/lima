@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/linkedin-tui/internal/ui/styles"
+	"github.com/ggfevans/li-cli/internal/ui/styles"
 )
 
 // AuthSubmitMsg is sent when the user submits auth credentials.
@@ -151,7 +151,7 @@ func (m AuthModel) View() string {
 	mutedStyle := m.styles.Muted
 
 	var b strings.Builder
-	b.WriteString(titleStyle.Render("LINKEDIN-TUI Authentication"))
+	b.WriteString(titleStyle.Render("Li-CLI Authentication"))
 	b.WriteString("\n\n")
 	b.WriteString(mutedStyle.Render("Extract cookies from your browser DevTools:"))
 	b.WriteString("\n")
