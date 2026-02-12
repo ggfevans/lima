@@ -7,9 +7,9 @@ import (
 
 func TestNormalizeCookieInput(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		wantErr bool
+		name     string
+		input    string
+		wantErr  bool
 		wantLiAt bool
 	}{
 		{

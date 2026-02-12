@@ -31,16 +31,16 @@ type Styles struct {
 	StatusKey lipgloss.Style
 
 	// Conversation list
-	ConvSelected   lipgloss.Style
-	ConvNormal     lipgloss.Style
-	ConvUnread     lipgloss.Style
+	ConvSelected lipgloss.Style
+	ConvNormal   lipgloss.Style
+	ConvUnread   lipgloss.Style
 
 	// Messages
-	OwnBubble      lipgloss.Style
-	OtherBubble    lipgloss.Style
-	Timestamp      lipgloss.Style
-	SenderName     lipgloss.Style
-	OwnSenderName  lipgloss.Style
+	OwnBubble     lipgloss.Style
+	OtherBubble   lipgloss.Style
+	Timestamp     lipgloss.Style
+	SenderName    lipgloss.Style
+	OwnSenderName lipgloss.Style
 }
 
 // New creates a Styles set from a theme.

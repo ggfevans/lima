@@ -10,7 +10,7 @@ import (
 type AppState int
 
 const (
-	StateAuth     AppState = iota
+	StateAuth AppState = iota
 	StateLoading
 	StateMessaging
 )

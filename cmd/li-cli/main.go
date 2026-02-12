@@ -8,7 +8,20 @@ import (
 	"github.com/ggfevans/li-cli/internal/app"
 )
 
+var (
+	version = "dev"
+	commit  = ""
+	date    = ""
+)
+
 func main() {
+	for _, arg := range os.Args[1:] {
+		if arg == "-v" || arg == "--version" {
+			fmt.Printf("li-cli %s (%s, %s)\n", version, commit, date)
+			return
+		}
+	}
+
 	m := app.New()
 
 	p := tea.NewProgram(m,

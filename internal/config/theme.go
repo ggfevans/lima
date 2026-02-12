@@ -7,20 +7,20 @@ type Theme struct {
 	Name string
 
 	// Base colors
-	Background    lipgloss.Color
-	Foreground    lipgloss.Color
-	CurrentLine   lipgloss.Color
-	Selection     lipgloss.Color
-	Comment       lipgloss.Color
-	Subtle        lipgloss.Color
+	Background  lipgloss.Color
+	Foreground  lipgloss.Color
+	CurrentLine lipgloss.Color
+	Selection   lipgloss.Color
+	Comment     lipgloss.Color
+	Subtle      lipgloss.Color
 
 	// Accent colors
-	Primary       lipgloss.Color
-	Secondary     lipgloss.Color
-	Success       lipgloss.Color
-	Warning       lipgloss.Color
-	Error         lipgloss.Color
-	Info          lipgloss.Color
+	Primary   lipgloss.Color
+	Secondary lipgloss.Color
+	Success   lipgloss.Color
+	Warning   lipgloss.Color
+	Error     lipgloss.Color
+	Info      lipgloss.Color
 
 	// Semantic
 	Accent        lipgloss.Color

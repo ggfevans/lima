@@ -3,6 +3,8 @@ version: 2
 builds:
   - main: ./cmd/li-cli/
     binary: li-cli
+    ldflags:
+      - -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
     env:
       - CGO_ENABLED=0
     goos:

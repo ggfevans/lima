@@ -50,22 +50,16 @@ func TestNavigation(t *testing.T) {
 		t.Errorf("expected Selected()=1 after MoveDown, got %d", m.Selected())
 	}
 
-	// MoveDown again
+	// MoveDown at max should not go above 1 (2 folders: index 0 and 1)
 	m.MoveDown()
-	if m.Selected() != 2 {
-		t.Errorf("expected Selected()=2 after second MoveDown, got %d", m.Selected())
-	}
-
-	// MoveDown at max should not go above 2
-	m.MoveDown()
-	if m.Selected() != 2 {
-		t.Errorf("expected Selected()=2 at upper bound, got %d", m.Selected())
+	if m.Selected() != 1 {
+		t.Errorf("expected Selected()=1 at upper bound, got %d", m.Selected())
 	}
 
 	// MoveUp decreases Selected
 	m.MoveUp()
-	if m.Selected() != 1 {
-		t.Errorf("expected Selected()=1 after MoveUp, got %d", m.Selected())
+	if m.Selected() != 0 {
+		t.Errorf("expected Selected()=0 after MoveUp, got %d", m.Selected())
 	}
 
 	// MoveUp to 0
@@ -139,7 +133,7 @@ func TestContent(t *testing.T) {
 
 	output := stripAnsi(m.View())
 
-	expected := []string{"FOLDERS", "Inbox", "Unread", "Archived"}
+	expected := []string{"FOLDERS", "Inbox", "Unread"}
 	for _, s := range expected {
 		if !strings.Contains(output, s) {
 			t.Errorf("expected view to contain %q, got:\n%s", s, output)

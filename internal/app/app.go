@@ -59,8 +59,8 @@ type Model struct {
 	userURN  linkedingo.URN
 
 	// Conversation data (mapped by ID for quick lookup)
-	conversations  []linkedin.DisplayConversation
-	prevCursor     string // for message pagination
+	conversations []linkedin.DisplayConversation
+	prevCursor    string // for message pagination
 
 	// Pending delete (conversation ID awaiting confirmation)
 	pendingDeleteID string

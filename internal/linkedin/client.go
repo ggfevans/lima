@@ -23,8 +23,8 @@ type Client struct {
 // --- tea.Msg types produced by this client ---
 
 type AuthValidatedMsg struct {
-	Username    string
-	UserURN     linkedingo.URN
+	Username string
+	UserURN  linkedingo.URN
 }
 
 type AuthFailedMsg struct {

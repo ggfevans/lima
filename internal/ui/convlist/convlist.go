@@ -10,12 +10,12 @@ import (
 
 // Conversation represents a conversation list item.
 type Conversation struct {
-	ID           string
-	Name         string
-	LastMessage  string
-	Timestamp    string
-	Unread       bool
-	UnreadCount  int
+	ID          string
+	Name        string
+	LastMessage string
+	Timestamp   string
+	Unread      bool
+	UnreadCount int
 }
 
 // Model represents the conversation list panel.
@@ -29,9 +29,9 @@ type Model struct {
 	offset        int // scroll offset
 
 	// Filter tabs
-	filterTab    int // 0=Inbox, 1=Unread
-	inboxCount   int
-	unreadCount  int
+	filterTab   int // 0=Inbox, 1=Unread
+	inboxCount  int
+	unreadCount int
 }
 
 // New creates a new conversation list model.

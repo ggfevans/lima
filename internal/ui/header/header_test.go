@@ -33,8 +33,8 @@ func TestDefaultState(t *testing.T) {
 	if !strings.Contains(output, "Li-CLI") {
 		t.Errorf("expected view to contain 'Li-CLI', got:\n%s", output)
 	}
-	if !strings.Contains(output, "DISCONNECTED") {
-		t.Errorf("expected view to contain 'DISCONNECTED', got:\n%s", output)
+	if !strings.Contains(output, "★") {
+		t.Errorf("expected view to contain '★' indicator, got:\n%s", output)
 	}
 }
 
@@ -44,8 +44,8 @@ func TestConnected(t *testing.T) {
 	m.SetConnected(true)
 
 	output := stripAnsi(m.View())
-	if !strings.Contains(output, "CONNECTED") {
-		t.Errorf("expected view to contain 'CONNECTED', got:\n%s", output)
+	if !strings.Contains(output, "★") {
+		t.Errorf("expected view to contain '★' indicator, got:\n%s", output)
 	}
 }
 

@@ -29,14 +29,14 @@ type DisplayParticipant struct {
 
 // DisplayMessage is a display-friendly message.
 type DisplayMessage struct {
-	ID          string
-	Sender      string
-	SenderURN   linkedingo.URN
-	Body        string
-	Timestamp   time.Time
-	IsOwn       bool
-	Format      linkedingo.MessageBodyRenderFormat
-	MessageURN  linkedingo.URN
+	ID         string
+	Sender     string
+	SenderURN  linkedingo.URN
+	Body       string
+	Timestamp  time.Time
+	IsOwn      bool
+	Format     linkedingo.MessageBodyRenderFormat
+	MessageURN linkedingo.URN
 }
 
 // ConvertConversation converts a linkedingo Conversation to a display type.
