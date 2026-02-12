@@ -3,7 +3,7 @@
 [![CI](https://github.com/ggfevans/li-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ggfevans/li-cli/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-It's LinkedIn messaging. In your terminal. Because LinkedIn shut down their API so they could fill your feed with more ads, like a cat presenting its butthole to a room full of guests. So now we do it the hard way.
+It's LinkedIn messaging. In your terminal.
 
 <!-- screenshot -->
 
