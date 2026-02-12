@@ -1,0 +1,411 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">LinkedIn TUI - ggfevans</title>
+    <style vid="5">
+        :root {
+            
+            --bg-color: #F3F2EF;         
+            --fg-color: #0A66C2;         
+            --text-dark: #000000;
+            --text-dim: #666666;
+            --border-color: #E0E0E0;
+            --highlight-bg: #0A66C2;
+            --highlight-fg: #FFFFFF;
+            --font-stack: 'SF Mono', 'Fira Code', 'Roboto Mono', 'Courier New', monospace;
+            --border-style: 1px solid var(--border-color);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: default; 
+        }
+
+        body {
+            background-color: #CBD5E0; 
+            color: var(--text-dark);
+            font-family: var(--font-stack);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden;
+        }
+
+        .terminal {
+            width: 1400px;
+            height: 900px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            border: var(--border-style);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .u-caps { text-transform: uppercase; letter-spacing: 0.05em; }
+        .u-bold { font-weight: 700; }
+        .u-dim { color: var(--text-dim); }
+        .u-invert { background-color: var(--highlight-bg); color: var(--highlight-fg); }
+        .u-pad { padding: 0.5rem 1rem; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: var(--border-style);
+            height: 48px;
+            align-items: center;
+            background: #FFFFFF;
+        }
+
+        .main-view {
+            display: grid;
+            grid-template-columns: 240px 380px 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            border-right: var(--border-style);
+            height: 100%;
+            overflow: hidden;
+        }
+        .col:last-child { border-right: none; }
+
+        .nav-section {
+            padding-top: 1rem;
+        }
+        
+        .nav-item {
+            padding: 8px 1rem;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-dim);
+        }
+        .nav-item.active {
+            background-color: #E7F3FF;
+            color: var(--fg-color);
+            font-weight: bold;
+            border-left: 4px solid var(--fg-color);
+        }
+
+        .list-header {
+            padding: 12px;
+            border-bottom: var(--border-style);
+            font-size: 0.85em;
+            background: #FFFFFF;
+        }
+        
+        .message-item {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            background: #FFFFFF;
+        }
+        .message-item.selected {
+            background-color: #EDF3F8;
+            border-left: 4px solid var(--fg-color);
+        }
+
+        .msg-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+        .msg-preview {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .thread-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: #FFFFFF;
+        }
+        .thread-content {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            background: #F3F2EF;
+        }
+        .thread-reply-box {
+            border-top: var(--border-style);
+            padding: 16px;
+            height: 140px;
+            background: #FFFFFF;
+        }
+        
+        .bubble {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        .bubble-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--fg-color);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .bubble-body {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 16px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .bubble-meta {
+            font-size: 0.8em;
+            margin-bottom: 8px;
+            color: var(--fg-color);
+            font-weight: bold;
+        }
+        
+        .bubble.me .bubble-body {
+            background: #E7F3FF;
+            border-radius: 8px 0 8px 8px;
+        }
+
+        .footer {
+            height: 40px;
+            border-top: var(--border-style);
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            background-color: #FFFFFF;
+            color: var(--text-dim);
+            font-size: 0.85em;
+        }
+        
+        .shortcut {
+            margin-right: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .key {
+            background: #EEEEEE;
+            color: #333333;
+            padding: 2px 6px;
+            margin-right: 8px;
+            border-radius: 3px;
+            border: 1px solid #CCCCCC;
+            font-size: 11px;
+        }
+
+        .logo {
+            font-weight: 900;
+            color: var(--fg-color);
+            font-size: 1.1em;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            right: 40px;
+            bottom: 60px;
+            opacity: 0.03;
+            font-size: 140px;
+            line-height: 0.8;
+            font-weight: 900;
+            pointer-events: none;
+            text-align: right;
+            z-index: 0;
+            color: var(--fg-color);
+            text-transform: uppercase;
+        }
+
+        .caret {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: var(--fg-color);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .progress-bar {
+            height: 6px; 
+            background: #E0E0E0; 
+            margin-top: 6px; 
+            width: 100%;
+            border-radius: 3px;
+        }
+        .progress-fill {
+            height: 100%; 
+            width: 75%; 
+            background: var(--fg-color);
+            border-radius: 3px;
+        }
+
+    </style>
+</head>
+<body vid="6">
+
+    <div class="terminal" vid="7">
+        
+        <div class="bg-pattern" vid="8">
+            PROFESSIONAL<br vid="9">NETWORK<br vid="10">v2.0
+        </div>
+
+        <div class="header u-pad" vid="11">
+            <div class="logo" vid="12">LINKEDIN<span style="font-weight:normal; color: var(--text-dim)" vid="13">_TUI</span></div>
+            <div class="u-dim" vid="14">user: @ggfevans • status: active</div>
+            <div class="u-bold" style="color: #057642" vid="15">[CONNECTED]</div>
+        </div>
+
+        <div class="main-view" vid="16">
+            <div class="col" vid="17">
+                <div class="nav-section" vid="18">
+                    <div class="u-pad u-dim u-caps" style="font-size: 10px; margin-bottom: 4px;" vid="19">Folders</div>
+                    <div class="nav-item active" vid="20">
+                        <span vid="21">Inbox</span>
+                        <span vid="22">4</span>
+                    </div>
+                    <div class="nav-item" vid="23">
+                        <span vid="24">Unread</span>
+                        <span vid="25">2</span>
+                    </div>
+                    <div class="nav-item" vid="26">
+                        <span vid="27">Archived</span>
+                        <span vid="28">0</span>
+                    </div>
+                    <div class="nav-item" vid="29">
+                        <span vid="30">Spam</span>
+                        <span vid="31">0</span>
+                    </div>
+                </div>
+
+                <div class="nav-section" vid="32">
+                    <div class="u-pad u-dim u-caps" style="font-size: 10px; margin-bottom: 4px;" vid="33">Network</div>
+                    <div class="nav-item" vid="34">
+                        <span vid="35">Invitations</span>
+                        <span vid="36">12</span>
+                    </div>
+                    <div class="nav-item" vid="37">
+                        <span vid="38">Events</span>
+                        <span vid="39">1</span>
+                    </div>
+                    <div class="nav-item" vid="40">
+                        <span vid="41">Groups</span>
+                        <span vid="42">8</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: auto; padding: 1.5rem; border-top: 1px solid var(--border-color); background: #FFFFFF" vid="43">
+                    <div class="u-dim" style="font-size: 0.8em;" vid="44">Profile Completeness</div>
+                    <div class="progress-bar" vid="45">
+                        <div class="progress-fill" vid="46"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col" vid="47">
+                <div class="list-header u-caps u-dim" vid="48">
+                    Primary / Recent
+                </div>
+                
+                <div class="message-item selected" vid="49">
+                    <div class="msg-meta" vid="50">
+                        <span class="u-bold" style="color: var(--text-dark)" vid="51">Sarah Jenkins</span>
+                        <span vid="52">10:42 AM</span>
+                    </div>
+                    <div class="msg-preview u-bold" style="color: var(--fg-color)" vid="53">Re: Senior Product Designer Role</div>
+                    <div class="msg-preview u-dim" style="font-size: 0.9em;" vid="54">Thanks for reaching out! Let's schedule...</div>
+                </div>
+
+                <div class="message-item" vid="55">
+                    <div class="msg-meta" vid="56">
+                        <span class="u-bold" vid="57">Tech Recruiters Inc.</span>
+                        <span class="u-dim" vid="58">Yesterday</span>
+                    </div>
+                    <div class="msg-preview" vid="59">Opportunity at Stealth Startup</div>
+                    <div class="msg-preview u-dim" vid="60">We saw your profile and thought you'd be...</div>
+                </div>
+
+                <div class="message-item" vid="61">
+                    <div class="msg-meta" vid="62">
+                        <span class="u-bold" vid="63">David Chen</span>
+                        <span class="u-dim" vid="64">Oct 24</span>
+                    </div>
+                    <div class="msg-preview" vid="65">Coffee chat?</div>
+                    <div class="msg-preview u-dim" vid="66">It's been a while, would love to catch up...</div>
+                </div>
+
+                <div class="message-item" vid="67">
+                    <div class="msg-meta" vid="68">
+                        <span class="u-bold" vid="69">LinkedIn News</span>
+                        <span class="u-dim" vid="70">Oct 22</span>
+                    </div>
+                    <div class="msg-preview" vid="71">Top Voice badge awarded</div>
+                    <div class="msg-preview u-dim" vid="72">Congratulations on being selected as a...</div>
+                </div>
+            </div>
+
+            <div class="col" style="z-index: 1;" vid="73">
+                <div class="thread-header" vid="74">
+                    <div class="u-caps u-dim" style="font-size: 0.8em; margin-bottom: 8px;" vid="75">Subject</div>
+                    <div style="font-size: 1.4em; font-weight: bold; margin-bottom: 12px; color: var(--text-dark);" vid="76">Re: Senior Product Designer Role</div>
+                    <div style="display: flex; gap: 8px; font-size: 0.9em;" vid="77">
+                        <span class="u-invert" style="padding: 2px 8px; border-radius: 4px; font-size: 11px;" vid="78">HIRING</span>
+                        <span style="border: 1px solid var(--fg-color); color: var(--fg-color); padding: 2px 8px; border-radius: 4px; font-size: 11px;" vid="79">REMOTE</span>
+                    </div>
+                </div>
+
+                <div class="thread-content" vid="80">
+                    <div class="bubble" vid="81">
+                        <div class="bubble-avatar" vid="82">SJ</div>
+                        <div class="bubble-body" vid="83">
+                            <div class="bubble-meta" vid="84">Sarah Jenkins • sarah.j@linkedin.com</div>
+                            <p vid="85">Hi there,</p>
+                            <br vid="86">
+                            <p vid="87">Thanks for getting back to me so quickly. The portfolio looks fantastic, especially the design system case study.</p>
+                            <br vid="88">
+                            <p vid="89">I'd love to set up a 30-minute introductory call with the team next Tuesday. Are you available between 1pm and 4pm EST?</p>
+                            <br vid="90">
+                            <p vid="91">Best,<br vid="92">Sarah</p>
+                        </div>
+                    </div>
+
+                    <div class="bubble me" vid="93">
+                        <div class="bubble-avatar" style="background: #004182;" vid="94">GE</div>
+                        <div class="bubble-body" vid="95">
+                            <div class="bubble-meta" vid="96">ggfevans • me@evans.dev</div>
+                            <p vid="97">Hi Sarah,</p>
+                            <br vid="98">
+                            <p vid="99">That sounds great. 2pm EST works perfectly for me.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thread-reply-box" vid="100">
+                    <div class="u-dim" style="margin-bottom: 12px; font-size: 0.9em;" vid="101">Write a message to Sarah Jenkins...</div>
+                    <span class="caret" vid="102"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer" vid="103">
+            <span class="shortcut" vid="104"><span class="key" vid="105">Ctrl+N</span>New Message</span>
+            <span class="shortcut" vid="106"><span class="key" vid="107">Ctrl+R</span>Reply</span>
+            <span class="shortcut" vid="108"><span class="key" vid="109">Ctrl+A</span>Archive</span>
+            <span class="shortcut" vid="110"><span class="key" vid="111">/</span>Search</span>
+            <span class="shortcut" vid="112"><span class="key" vid="113">TAB</span>Next Pane</span>
+            <span class="shortcut" style="margin-left: auto;" vid="114"><span class="key" vid="115">F1</span>Help</span>
+        </div>
+    </div>
+
+
+</body></html>
