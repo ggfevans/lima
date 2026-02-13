@@ -208,10 +208,7 @@ func (m Model) View() string {
 
 			previewLine := "  " + m.styles.Muted.Render(preview)
 
-			entry := line + "\n" + previewLine
-			entryStyle := lipgloss.NewStyle().Width(contentWidth)
-
-			content += "\n" + entryStyle.Render(entry)
+			content += "\n" + line + "\n" + previewLine
 		}
 	}
 
@@ -219,7 +216,6 @@ func (m Model) View() string {
 	content = util.PadToHeight(content, innerHeight)
 	return border.
 		Width(m.width - 2).
-		Height(m.height - 2).
 		Render(content)
 }
 
