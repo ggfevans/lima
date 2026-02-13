@@ -559,6 +559,16 @@ func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
 	m.compose.SetRecipient(conv.Name)
 	composeCmd := m.activateCompose()
 
+	// Mark read locally
+	for i := range m.conversations {
+		if m.conversations[i].ID == conv.ID {
+			m.conversations[i].Unread = false
+			break
+		}
+	}
+	m.applyConversationFilter()
+	m.updateFilterCounts()
+
 	var cmds []tea.Cmd
 	if composeCmd != nil {
 		cmds = append(cmds, composeCmd)
