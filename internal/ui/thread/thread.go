@@ -238,6 +238,13 @@ func (m *Model) refreshContent() {
 	accentBar := lipgloss.NewStyle().Foreground(m.styles.Theme.OwnSender).Render("▎")
 	divider := m.styles.Muted.Render(strings.Repeat("─", contentWidth-2))
 
+	// Word-wrap style for body text (account for prefix character)
+	bodyWidth := contentWidth - 2
+	if bodyWidth < 1 {
+		bodyWidth = 1
+	}
+	wrapStyle := lipgloss.NewStyle().Width(bodyWidth)
+
 	// Skip first sender header if it matches the conversation title (1:1 chat)
 	skipFirstSender := len(m.messages) > 0 && m.messages[0].Sender == m.subject
 
@@ -271,15 +278,24 @@ func (m *Model) refreshContent() {
 		if msg.IsOwn {
 			prefix = accentBar
 		}
-		lines = append(lines, prefix+msg.Body)
+		wrapped := wrapStyle.Render(msg.Body)
+		for i, line := range strings.Split(wrapped, "\n") {
+			if i == 0 {
+				lines = append(lines, prefix+line)
+			} else {
+				lines = append(lines, " "+line)
+			}
+		}
 	}
 
 	if m.typingName != "" {
 		if len(lines) > 0 {
 			lines = append(lines, divider)
 		}
-		typingText := m.styles.Muted.Render(m.typingName+" is typing ") + m.typingSpinner.View()
-		lines = append(lines, typingText)
+		typingText := wrapStyle.Render(m.styles.Muted.Render(m.typingName+" is typing ") + m.typingSpinner.View())
+		for _, line := range strings.Split(typingText, "\n") {
+			lines = append(lines, " "+line)
+		}
 	}
 
 	m.viewport.SetContent(strings.Join(lines, "\n"))
