@@ -518,7 +518,8 @@ func (m Model) handleThreadKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.thread.ScrollDown(m.thread.VisibleHeight() / 2)
 	case isReplyKey(msg):
 		if m.thread.HasConversation() {
-			m.activateCompose()
+			cmd := m.activateCompose()
+			return m, cmd
 		}
 	case isEscapeKey(msg):
 		m.setFocus(FocusConvList)
@@ -552,9 +553,12 @@ func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
 
 	m.thread.SetConversation(conv.ID, conv.Name)
 	m.compose.SetRecipient(conv.Name)
-	m.setFocus(FocusThread)
+	composeCmd := m.activateCompose()
 
 	var cmds []tea.Cmd
+	if composeCmd != nil {
+		cmds = append(cmds, composeCmd)
+	}
 	if m.client != nil {
 		urn := m.findConversationURN(conv.ID)
 		if !urn.IsEmpty() {
@@ -669,11 +673,11 @@ func (m *Model) updateFilterCounts() {
 func (m Model) openSelectedConversationAndReply() (tea.Model, tea.Cmd) {
 	newM, cmd := m.openSelectedConversation()
 	m = newM.(Model)
-	m.activateCompose()
-	return m, cmd
+	composeCmd := m.activateCompose()
+	return m, tea.Batch(cmd, composeCmd)
 }
 
-func (m *Model) activateCompose() {
+func (m *Model) activateCompose() tea.Cmd {
 	// Find conversation title for recipient
 	convID := m.thread.ConversationID()
 	for _, dc := range m.conversations {
@@ -682,8 +686,11 @@ func (m *Model) activateCompose() {
 			break
 		}
 	}
-	m.compose.Focus()
-	m.setFocus(FocusCompose)
+	cmd := m.compose.Focus()
+	m.focus = FocusCompose
+	m.convList.Blur()
+	m.thread.Blur()
+	return cmd
 }
 
 func (m Model) sendMessage() (tea.Model, tea.Cmd) {

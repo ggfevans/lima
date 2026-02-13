@@ -51,10 +51,10 @@ func (m *Model) SetSize(w, h int) {
 	m.textarea.SetHeight(h)
 }
 
-// Focus gives focus to the compose box.
-func (m *Model) Focus() {
+// Focus gives focus to the compose box and returns the cursor blink cmd.
+func (m *Model) Focus() tea.Cmd {
 	m.focused = true
-	m.textarea.Focus()
+	return m.textarea.Focus()
 }
 
 // Blur removes focus.
