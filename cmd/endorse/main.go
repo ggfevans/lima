@@ -5,7 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/ggfevans/lima/internal/app"
+	"github.com/ggfevans/endorse/internal/app"
 )
 
 var (
@@ -17,7 +17,7 @@ var (
 func main() {
 	for _, arg := range os.Args[1:] {
 		if arg == "-v" || arg == "--version" {
-			fmt.Printf("lima %s (%s, %s)\n", version, commit, date)
+			fmt.Printf("endorse %s (%s, %s)\n", version, commit, date)
 			return
 		}
 	}

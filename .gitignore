@@ -3,5 +3,5 @@ bin/
 *.test
 *.out
 .DS_Store
-/lima
+/endorse
 /linkedin-tui

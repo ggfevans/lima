@@ -11,7 +11,7 @@
 If you discover a security vulnerability, please report it responsibly:
 
 1. **Do not** open a public issue
-2. Use [GitHub's private vulnerability reporting](https://github.com/ggfevans/lima/security/advisories/new)
+2. Use [GitHub's private vulnerability reporting](https://github.com/ggfevans/endorse/security/advisories/new)
 3. Or email the maintainer directly
 
 ## Response Timeline
@@ -25,7 +25,7 @@ If you discover a security vulnerability, please report it responsibly:
 This project handles sensitive data including:
 
 - LinkedIn session cookies and authentication tokens
-- Credential storage on disk (`~/.config/lima/credentials.json`)
+- Credential storage on disk (`~/.config/endorse/credentials.json`)
 - LinkedIn API interactions over HTTPS
 
 Security reports related to credential handling, session management, or data exposure are especially welcome.

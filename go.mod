@@ -1,4 +1,4 @@
-module github.com/ggfevans/lima
+module github.com/ggfevans/endorse
 
 go 1.25.7
 

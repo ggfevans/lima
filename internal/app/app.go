@@ -10,17 +10,17 @@ import (
 	"github.com/rs/zerolog"
 	"go.mau.fi/mautrix-linkedin/pkg/linkedingo"
 
-	"github.com/ggfevans/lima/internal/config"
-	"github.com/ggfevans/lima/internal/linkedin"
-	"github.com/ggfevans/lima/internal/ui/compose"
-	"github.com/ggfevans/lima/internal/ui/convlist"
-	"github.com/ggfevans/lima/internal/ui/header"
-	"github.com/ggfevans/lima/internal/ui/layout"
-	"github.com/ggfevans/lima/internal/ui/modal"
-	"github.com/ggfevans/lima/internal/ui/statusbar"
-	"github.com/ggfevans/lima/internal/ui/styles"
-	"github.com/ggfevans/lima/internal/ui/thread"
-	"github.com/ggfevans/lima/internal/util"
+	"github.com/ggfevans/endorse/internal/config"
+	"github.com/ggfevans/endorse/internal/linkedin"
+	"github.com/ggfevans/endorse/internal/ui/compose"
+	"github.com/ggfevans/endorse/internal/ui/convlist"
+	"github.com/ggfevans/endorse/internal/ui/header"
+	"github.com/ggfevans/endorse/internal/ui/layout"
+	"github.com/ggfevans/endorse/internal/ui/modal"
+	"github.com/ggfevans/endorse/internal/ui/statusbar"
+	"github.com/ggfevans/endorse/internal/ui/styles"
+	"github.com/ggfevans/endorse/internal/ui/thread"
+	"github.com/ggfevans/endorse/internal/util"
 )
 
 // Model is the root application model.

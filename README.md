@@ -1,6 +1,6 @@
-# lima
+# endorse
 
-[![CI](https://github.com/ggfevans/lima/actions/workflows/ci.yml/badge.svg)](https://github.com/ggfevans/lima/actions/workflows/ci.yml)
+[![CI](https://github.com/ggfevans/endorse/actions/workflows/ci.yml/badge.svg)](https://github.com/ggfevans/endorse/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 It's LinkedIn messaging. In your terminal.
@@ -28,7 +28,7 @@ LinkedIn used to have a perfectly good API. Then they closed it. Presumably so t
 ## Installation
 
 ```sh
-go install github.com/ggfevans/lima/cmd/lima@latest
+go install github.com/ggfevans/endorse/cmd/endorse@latest
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ go install github.com/ggfevans/lima/cmd/lima@latest
 Launch the TUI:
 
 ```sh
-lima
+endorse
 ```
 
 On first launch you'll be prompted for your LinkedIn session cookies. Extract these from your browser's developer tools:
@@ -64,12 +64,12 @@ On first launch you'll be prompted for your LinkedIn session cookies. Extract th
 ## Building from Source
 
 ```sh
-git clone https://github.com/ggfevans/lima.git
-cd lima
+git clone https://github.com/ggfevans/endorse.git
+cd endorse
 make build
 ```
 
-The binary will be in `bin/lima`.
+The binary will be in `bin/endorse`.
 
 ### Running Tests
 

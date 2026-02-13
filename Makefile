@@ -1,4 +1,4 @@
-BINARY_NAME=lima
+BINARY_NAME=endorse
 BUILD_DIR=bin
 GO=go
 
@@ -10,10 +10,10 @@ LDFLAGS := -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DA
 .PHONY: build run clean fmt vet
 
 build:
-	$(GO) build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/lima/
+	$(GO) build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/endorse/
 
 run:
-	$(GO) run ./cmd/lima/
+	$(GO) run ./cmd/endorse/
 
 clean:
 	rm -rf $(BUILD_DIR)

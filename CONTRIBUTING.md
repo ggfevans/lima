@@ -7,8 +7,8 @@ Contributions are welcome! Here's how to get started.
 **Requirements:** Go 1.25+
 
 ```sh
-git clone https://github.com/ggfevans/lima.git
-cd lima
+git clone https://github.com/ggfevans/endorse.git
+cd endorse
 make build
 make test
 ```
@@ -38,7 +38,7 @@ make test
 ## Project Structure
 
 ```
-cmd/lima/            Main entry point
+cmd/endorse/         Main entry point
 internal/
   app/               Root application model and update loop
   config/            Configuration and credential storage

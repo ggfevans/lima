@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/lima/internal/ui/styles"
+	"github.com/ggfevans/endorse/internal/ui/styles"
 )
 
 // ConfirmModel is a centered confirmation dialog.

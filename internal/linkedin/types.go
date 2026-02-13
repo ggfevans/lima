@@ -5,7 +5,7 @@ import (
 
 	"go.mau.fi/mautrix-linkedin/pkg/linkedingo"
 
-	"github.com/ggfevans/lima/internal/util"
+	"github.com/ggfevans/endorse/internal/util"
 )
 
 // DisplayConversation is a display-friendly version of a LinkedIn conversation.
