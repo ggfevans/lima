@@ -41,6 +41,9 @@ type Styles struct {
 	Timestamp     lipgloss.Style
 	SenderName    lipgloss.Style
 	OwnSenderName lipgloss.Style
+
+	// Compose
+	ComposeCursor lipgloss.Style
 }
 
 // New creates a Styles set from a theme.
@@ -129,6 +132,9 @@ func New(theme config.Theme) Styles {
 	s.OwnSenderName = lipgloss.NewStyle().
 		Foreground(theme.OwnSender).
 		Bold(true)
+
+	s.ComposeCursor = lipgloss.NewStyle().
+		Foreground(theme.OwnSender)
 
 	return s
 }
