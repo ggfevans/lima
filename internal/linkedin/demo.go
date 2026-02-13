@@ -198,7 +198,13 @@ func (c *DemoClient) scheduleAutoReply(convID string) {
 	c.mu.Unlock()
 }
 
-func (c *DemoClient) MarkRead(_ linkedingo.URN) tea.Cmd {
+func (c *DemoClient) MarkRead(urn linkedingo.URN) tea.Cmd {
+	for i := range c.conversations {
+		if c.conversations[i].URN == urn {
+			c.conversations[i].Unread = false
+			break
+		}
+	}
 	return func() tea.Msg { return nil }
 }
 
