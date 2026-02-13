@@ -76,12 +76,16 @@ type Model struct {
 
 // Options configures the application.
 type Options struct {
-	DemoMode bool
+	DemoMode  bool
+	ThemeName string
 }
 
 // New creates a new application model.
 func New(opts Options) Model {
 	cfg, _ := config.Load()
+	if opts.ThemeName != "" {
+		cfg.ThemeName = opts.ThemeName
+	}
 	theme := config.ThemeByName(cfg.ThemeName)
 	s := styles.New(theme)
 
