@@ -533,7 +533,7 @@ func (m Model) handleComposeKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.compose.Blur()
 		m.setFocus(FocusThread)
 		return m, nil
-	case isSendKey(msg):
+	case isEnterKey(msg), isSendKey(msg):
 		return m.sendMessage()
 	}
 
