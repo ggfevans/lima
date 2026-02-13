@@ -8,16 +8,22 @@ import (
 
 // Demo URNs — using LinkedIn's URN format with fake IDs
 var (
-	demoOwnURN   = linkedingo.NewURN("urn:li:member:demo-self")
-	demoKarlURN  = linkedingo.NewURN("urn:li:member:demo-karl")
-	demoHowieURN = linkedingo.NewURN("urn:li:member:demo-howie")
-	demoTammyURN = linkedingo.NewURN("urn:li:member:demo-tammy")
-	demoBrianURN = linkedingo.NewURN("urn:li:member:demo-brian")
+	demoOwnURN    = linkedingo.NewURN("urn:li:member:demo-self")
+	demoKarlURN   = linkedingo.NewURN("urn:li:member:demo-karl")
+	demoHowieURN  = linkedingo.NewURN("urn:li:member:demo-howie")
+	demoTammyURN  = linkedingo.NewURN("urn:li:member:demo-tammy")
+	demoBrianURN  = linkedingo.NewURN("urn:li:member:demo-brian")
+	demoDanURN    = linkedingo.NewURN("urn:li:member:demo-dan")
+	demoPattiURN  = linkedingo.NewURN("urn:li:member:demo-patti")
+	demoMarcusURN = linkedingo.NewURN("urn:li:member:demo-marcus")
 
-	demoConvKarlURN  = linkedingo.NewURN("urn:li:conversation:conv-karl")
-	demoConvHowieURN = linkedingo.NewURN("urn:li:conversation:conv-howie")
-	demoConvTammyURN = linkedingo.NewURN("urn:li:conversation:conv-tammy")
-	demoConvBrianURN = linkedingo.NewURN("urn:li:conversation:conv-brian")
+	demoConvKarlURN   = linkedingo.NewURN("urn:li:conversation:conv-karl")
+	demoConvHowieURN  = linkedingo.NewURN("urn:li:conversation:conv-howie")
+	demoConvTammyURN  = linkedingo.NewURN("urn:li:conversation:conv-tammy")
+	demoConvBrianURN  = linkedingo.NewURN("urn:li:conversation:conv-brian")
+	demoConvDanURN    = linkedingo.NewURN("urn:li:conversation:conv-dan")
+	demoConvPattiURN  = linkedingo.NewURN("urn:li:conversation:conv-patti")
+	demoConvMarcusURN = linkedingo.NewURN("urn:li:conversation:conv-marcus")
 )
 
 func buildDemoConversations() []DisplayConversation {
@@ -68,6 +74,42 @@ func buildDemoConversations() []DisplayConversation {
 			URN:            demoConvBrianURN,
 			Participants: []DisplayParticipant{
 				{Name: "Brian", URN: demoBrianURN},
+				{Name: "You", URN: demoOwnURN, IsOwnUser: true},
+			},
+		},
+		{
+			ID:             demoConvDanURN.String(),
+			Title:          "Dan Vega",
+			LastMessage:    "They're turbo toilets. The water goes the other way",
+			LastActivityAt: now.Add(-1 * time.Hour),
+			Unread:         true,
+			URN:            demoConvDanURN,
+			Participants: []DisplayParticipant{
+				{Name: "Dan Vega", URN: demoDanURN},
+				{Name: "You", URN: demoOwnURN, IsOwnUser: true},
+			},
+		},
+		{
+			ID:             demoConvPattiURN.String(),
+			Title:          "Patti Harrison",
+			LastMessage:    "I know that last one isn't a real skill but I think if enough people endorse me they'll have to add it",
+			LastActivityAt: now.Add(-2 * time.Hour),
+			Unread:         false,
+			URN:            demoConvPattiURN,
+			Participants: []DisplayParticipant{
+				{Name: "Patti Harrison", URN: demoPattiURN},
+				{Name: "You", URN: demoOwnURN, IsOwnUser: true},
+			},
+		},
+		{
+			ID:             demoConvMarcusURN.String(),
+			Title:          "Marcus",
+			LastMessage:    "That was autocorrect. I meant to say I'm going to circle back",
+			LastActivityAt: now.Add(-30 * time.Minute),
+			Unread:         true,
+			URN:            demoConvMarcusURN,
+			Participants: []DisplayParticipant{
+				{Name: "Marcus", URN: demoMarcusURN},
 				{Name: "You", URN: demoOwnURN, IsOwnUser: true},
 			},
 		},
@@ -207,6 +249,113 @@ func buildDemoMessages() map[string][]DisplayMessage {
 				Timestamp: now.Add(-3 * time.Hour),
 			},
 		},
+		demoConvDanURN.String(): {
+			{
+				ID:        "msg-dan-1",
+				Sender:    "Dan Vega",
+				SenderURN: demoDanURN,
+				Body:      "Hi! I came across your profile and think you'd be a great fit for an exciting opportunity",
+				Timestamp: now.Add(-1*time.Hour - 20*time.Minute),
+			},
+			{
+				ID:        "msg-dan-2",
+				Sender:    "Dan Vega",
+				SenderURN: demoDanURN,
+				Body:      "It's a startup. We're disrupting the toilet industry",
+				Timestamp: now.Add(-1*time.Hour - 15*time.Minute),
+			},
+			{
+				ID:        "msg-dan-3",
+				Sender:    "You",
+				SenderURN: demoOwnURN,
+				Body:      "What's the role?",
+				Timestamp: now.Add(-1*time.Hour - 10*time.Minute),
+				IsOwn:     true,
+			},
+			{
+				ID:        "msg-dan-4",
+				Sender:    "Dan Vega",
+				SenderURN: demoDanURN,
+				Body:      "You'd be employee number 2. I'm employee number 1. There's no salary yet but the toilets are going to be HUGE",
+				Timestamp: now.Add(-1*time.Hour - 5*time.Minute),
+			},
+			{
+				ID:        "msg-dan-5",
+				Sender:    "Dan Vega",
+				SenderURN: demoDanURN,
+				Body:      "They're turbo toilets. The water goes the other way",
+				Timestamp: now.Add(-1 * time.Hour),
+			},
+		},
+		demoConvPattiURN.String(): {
+			{
+				ID:        "msg-patti-1",
+				Sender:    "Patti Harrison",
+				SenderURN: demoPattiURN,
+				Body:      "Hey would you mind endorsing me on LinkedIn for a few skills?",
+				Timestamp: now.Add(-2*time.Hour - 15*time.Minute),
+			},
+			{
+				ID:        "msg-patti-2",
+				Sender:    "You",
+				SenderURN: demoOwnURN,
+				Body:      "Sure, which ones?",
+				Timestamp: now.Add(-2*time.Hour - 10*time.Minute),
+				IsOwn:     true,
+			},
+			{
+				ID:        "msg-patti-3",
+				Sender:    "Patti Harrison",
+				SenderURN: demoPattiURN,
+				Body:      "Leadership, Strategic Thinking, and Being the Most Beautiful Person in the Office",
+				Timestamp: now.Add(-2*time.Hour - 5*time.Minute),
+			},
+			{
+				ID:        "msg-patti-4",
+				Sender:    "Patti Harrison",
+				SenderURN: demoPattiURN,
+				Body:      "I know that last one isn't a real skill but I think if enough people endorse me for it they'll have to add it",
+				Timestamp: now.Add(-2 * time.Hour),
+			},
+		},
+		demoConvMarcusURN.String(): {
+			{
+				ID:        "msg-marcus-1",
+				Sender:    "Marcus",
+				SenderURN: demoMarcusURN,
+				Body:      "Just following up on my follow-up from earlier today",
+				Timestamp: now.Add(-35 * time.Minute),
+			},
+			{
+				ID:        "msg-marcus-2",
+				Sender:    "Marcus",
+				SenderURN: demoMarcusURN,
+				Body:      "Per my last email, the Q3 deliverables are still TBD pending alignment on the synergies",
+				Timestamp: now.Add(-34 * time.Minute),
+			},
+			{
+				ID:        "msg-marcus-3",
+				Sender:    "You",
+				SenderURN: demoOwnURN,
+				Body:      "Which deliverables?",
+				Timestamp: now.Add(-33 * time.Minute),
+				IsOwn:     true,
+			},
+			{
+				ID:        "msg-marcus-4",
+				Sender:    "Marcus",
+				SenderURN: demoMarcusURN,
+				Body:      "ALL of them. They moved the goalposts again. I'm going to kill",
+				Timestamp: now.Add(-31 * time.Minute),
+			},
+			{
+				ID:        "msg-marcus-5",
+				Sender:    "Marcus",
+				SenderURN: demoMarcusURN,
+				Body:      "That was autocorrect. I meant to say I'm going to circle back",
+				Timestamp: now.Add(-30 * time.Minute),
+			},
+		},
 	}
 }
 
@@ -228,6 +377,18 @@ func buildDemoAutoReplies() map[string][]string {
 		demoConvBrianURN.String(): {
 			"You gotta give though",
 			"The website works because of you",
+		},
+		demoConvDanURN.String(): {
+			"We don't even need investors, the toilets sell themselves",
+			"I can't stop thinking about those toilets",
+		},
+		demoConvPattiURN.String(): {
+			"I also need you to endorse me for 'Tables'",
+			"The website said I'm not allowed to add my own skills anymore",
+		},
+		demoConvMarcusURN.String(): {
+			"Let's take this offline and never speak of it again",
+			"I put a meeting on your calendar. It's 4 hours. No agenda. Good luck",
 		},
 	}
 }
@@ -253,6 +414,17 @@ func buildDemoTimeline() []scheduledEvent {
 				Sender:    "Tammy Craps",
 				SenderURN: demoTammyURN,
 				Body:      "I need you to tell me right now that that's not a lot of eggs",
+				Timestamp: time.Now(),
+			},
+		},
+		{
+			delay:          20 * time.Second,
+			conversationID: demoConvMarcusURN.String(),
+			message: DisplayMessage{
+				ID:        "msg-marcus-rt-1",
+				Sender:    "Marcus",
+				SenderURN: demoMarcusURN,
+				Body:      "URGENT: Please disregard my previous message. And the one before that. Actually disregard all of them",
 				Timestamp: time.Now(),
 			},
 		},
