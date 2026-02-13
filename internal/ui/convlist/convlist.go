@@ -219,6 +219,7 @@ func (m Model) View() string {
 	content = util.PadToHeight(content, innerHeight)
 	return border.
 		Width(m.width - 2).
+		Height(m.height - 2).
 		Render(content)
 }
 
@@ -229,7 +230,7 @@ func (m Model) visibleEntries() int {
 		return 1
 	}
 	// Each entry takes ~3 lines: name+timestamp, preview, gap
-	entries := visibleLines / 3
+	entries := (visibleLines + 2) / 3 // ceiling division to use available space
 	if entries < 1 {
 		entries = 1
 	}
