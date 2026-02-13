@@ -14,7 +14,6 @@ type Model struct {
 	width     int
 	height    int
 	focused   bool
-	active    bool
 	recipient string
 }
 
@@ -25,6 +24,17 @@ func New(s styles.Styles) Model {
 	ta.CharLimit = 8000
 	ta.ShowLineNumbers = false
 	ta.SetHeight(3)
+
+	// Remove the default full-line highlight
+	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
+	ta.BlurredStyle.CursorLine = lipgloss.NewStyle()
+
+	// Use teal cursor
+	ta.Cursor.Style = lipgloss.NewStyle().Foreground(s.Theme.OwnSender)
+
+	// Muted placeholder
+	ta.FocusedStyle.Placeholder = lipgloss.NewStyle().Foreground(s.Theme.Subtle)
+	ta.BlurredStyle.Placeholder = lipgloss.NewStyle().Foreground(s.Theme.Subtle)
 
 	return Model{
 		styles:   s,
@@ -37,14 +47,13 @@ func New(s styles.Styles) Model {
 func (m *Model) SetSize(w, h int) {
 	m.width = w
 	m.height = h
-	m.textarea.SetWidth(w - 4)
-	m.textarea.SetHeight(h - 2)
+	m.textarea.SetWidth(w)
+	m.textarea.SetHeight(h)
 }
 
-// Focus gives focus and activates the compose box.
+// Focus gives focus to the compose box.
 func (m *Model) Focus() {
 	m.focused = true
-	m.active = true
 	m.textarea.Focus()
 }
 
@@ -54,9 +63,8 @@ func (m *Model) Blur() {
 	m.textarea.Blur()
 }
 
-// Deactivate hides the compose box.
+// Deactivate resets the compose box.
 func (m *Model) Deactivate() {
-	m.active = false
 	m.focused = false
 	m.textarea.Blur()
 	m.textarea.Reset()
@@ -65,9 +73,6 @@ func (m *Model) Deactivate() {
 
 // Focused returns focus state.
 func (m Model) Focused() bool { return m.focused }
-
-// Active returns whether the compose box is visible/active.
-func (m Model) Active() bool { return m.active }
 
 // SetRecipient sets who we're replying to.
 func (m *Model) SetRecipient(name string) {
@@ -92,7 +97,7 @@ func (m *Model) Reset() {
 
 // Update handles tea messages for the textarea.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	if !m.active || !m.focused {
+	if !m.focused {
 		return m, nil
 	}
 
@@ -101,29 +106,13 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	return m, cmd
 }
 
-// View renders the compose box.
+// View renders the compose textarea content (no border — thread handles that).
 func (m Model) View() string {
-	if !m.active {
-		return ""
-	}
-
-	border := m.styles.BorderNormal
-	if m.focused {
-		border = m.styles.BorderFocused
-	}
-
-	content := m.textarea.View()
-
-	return border.
-		Width(m.width - 2).
-		Render(content)
+	return m.textarea.View()
 }
 
-// Height returns the compose box height when active.
+// ComposeHeight returns the compose box height.
 func (m Model) ComposeHeight() int {
-	if !m.active {
-		return 0
-	}
 	return m.height
 }
 
@@ -132,7 +121,7 @@ func (m Model) CursorLine() int {
 	return m.textarea.Line()
 }
 
-// Placeholder sets a custom placeholder.
+// SetPlaceholder sets a custom placeholder.
 func (m *Model) SetPlaceholder(p string) {
 	m.textarea.Placeholder = p
 }
