@@ -1,4 +1,4 @@
-module github.com/ggfevans/li-cli
+module github.com/ggfevans/lima
 
 go 1.25.7
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/ui/styles"
 )
 
 // Hint represents a keybinding hint.

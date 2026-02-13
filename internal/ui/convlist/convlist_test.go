@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ggfevans/li-cli/internal/config"
-	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/config"
+	"github.com/ggfevans/lima/internal/ui/styles"
 )
 
 var ansiRe = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)

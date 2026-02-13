@@ -1,6 +1,6 @@
-# li-cli
+# lima
 
-[![CI](https://github.com/ggfevans/li-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ggfevans/li-cli/actions/workflows/ci.yml)
+[![CI](https://github.com/ggfevans/lima/actions/workflows/ci.yml/badge.svg)](https://github.com/ggfevans/lima/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 It's LinkedIn messaging. In your terminal.
@@ -28,7 +28,7 @@ LinkedIn used to have a perfectly good API. Then they closed it. Presumably so t
 ## Installation
 
 ```sh
-go install github.com/ggfevans/li-cli/cmd/li-cli@latest
+go install github.com/ggfevans/lima/cmd/lima@latest
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ go install github.com/ggfevans/li-cli/cmd/li-cli@latest
 Launch the TUI:
 
 ```sh
-li-cli
+lima
 ```
 
 On first launch you'll be prompted for your LinkedIn session cookies. Extract these from your browser's developer tools:
@@ -64,12 +64,12 @@ On first launch you'll be prompted for your LinkedIn session cookies. Extract th
 ## Building from Source
 
 ```sh
-git clone https://github.com/ggfevans/li-cli.git
-cd li-cli
+git clone https://github.com/ggfevans/lima.git
+cd lima
 make build
 ```
 
-The binary will be in `bin/li-cli`.
+The binary will be in `bin/lima`.
 
 ### Running Tests
 

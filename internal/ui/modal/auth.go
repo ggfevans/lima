@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/ui/styles"
 )
 
 // AuthSubmitMsg is sent when the user submits auth credentials.

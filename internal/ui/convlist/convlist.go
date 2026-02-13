@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/li-cli/internal/ui/styles"
-	"github.com/ggfevans/li-cli/internal/util"
+	"github.com/ggfevans/lima/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/util"
 )
 
 // Conversation represents a conversation list item.

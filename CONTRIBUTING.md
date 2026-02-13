@@ -7,8 +7,8 @@ Contributions are welcome! Here's how to get started.
 **Requirements:** Go 1.25+
 
 ```sh
-git clone https://github.com/ggfevans/li-cli.git
-cd li-cli
+git clone https://github.com/ggfevans/lima.git
+cd lima
 make build
 make test
 ```
@@ -38,7 +38,7 @@ make test
 ## Project Structure
 
 ```
-cmd/li-cli/          Main entry point
+cmd/lima/            Main entry point
 internal/
   app/               Root application model and update loop
   config/            Configuration and credential storage

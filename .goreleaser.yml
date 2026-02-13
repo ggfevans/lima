@@ -1,8 +1,8 @@
 version: 2
 
 builds:
-  - main: ./cmd/li-cli/
-    binary: li-cli
+  - main: ./cmd/lima/
+    binary: lima
     ldflags:
       - -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
     env:

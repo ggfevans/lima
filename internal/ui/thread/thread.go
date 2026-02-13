@@ -6,8 +6,8 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/li-cli/internal/ui/styles"
-	"github.com/ggfevans/li-cli/internal/util"
+	"github.com/ggfevans/lima/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/util"
 )
 
 // Message represents a single message in a thread.

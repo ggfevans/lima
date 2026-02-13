@@ -2,7 +2,7 @@ package header
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/li-cli/internal/ui/styles"
+	"github.com/ggfevans/lima/internal/ui/styles"
 )
 
 // Model represents the header bar.

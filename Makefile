@@ -1,4 +1,4 @@
-BINARY_NAME=li-cli
+BINARY_NAME=lima
 BUILD_DIR=bin
 GO=go
 
@@ -10,10 +10,10 @@ LDFLAGS := -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DA
 .PHONY: build run clean fmt vet
 
 build:
-	$(GO) build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/li-cli/
+	$(GO) build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/lima/
 
 run:
-	$(GO) run ./cmd/li-cli/
+	$(GO) run ./cmd/lima/
 
 clean:
 	rm -rf $(BUILD_DIR)
