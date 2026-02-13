@@ -29,8 +29,6 @@ type AuthModel struct {
 
 const (
 	authInputCookie = iota
-	authInputPageInstance
-	authInputXLiTrack
 	authInputCount
 )
 
@@ -43,16 +41,6 @@ func NewAuth(s styles.Styles) AuthModel {
 	inputs[authInputCookie].Focus()
 	inputs[authInputCookie].CharLimit = 0 // unlimited
 	inputs[authInputCookie].Width = 60
-
-	inputs[authInputPageInstance] = textinput.New()
-	inputs[authInputPageInstance].Placeholder = "urn:li:page:d_flagship3_messaging;... (optional)"
-	inputs[authInputPageInstance].CharLimit = 256
-	inputs[authInputPageInstance].Width = 60
-
-	inputs[authInputXLiTrack] = textinput.New()
-	inputs[authInputXLiTrack].Placeholder = `{"clientVersion":"1.13...",...} (optional)`
-	inputs[authInputXLiTrack].CharLimit = 1024
-	inputs[authInputXLiTrack].Width = 60
 
 	return AuthModel{
 		styles: s,
@@ -108,20 +96,16 @@ func (m AuthModel) Update(msg tea.Msg) (AuthModel, tea.Cmd) {
 			m.focusIndex = (m.focusIndex - 1 + authInputCount) % authInputCount
 			return m, m.updateFocus()
 		case "enter":
-			if m.focusIndex == authInputCount-1 || msg.String() == "enter" {
-				cookie := strings.TrimSpace(m.inputs[authInputCookie].Value())
-				if cookie == "" {
-					m.err = "Cookie header is required"
-					return m, nil
-				}
-				m.err = ""
-				m.loading = true
-				return m, func() tea.Msg {
-					return AuthSubmitMsg{
-						Cookie:       cookie,
-						PageInstance: strings.TrimSpace(m.inputs[authInputPageInstance].Value()),
-						XLiTrack:     strings.TrimSpace(m.inputs[authInputXLiTrack].Value()),
-					}
+			cookie := strings.TrimSpace(m.inputs[authInputCookie].Value())
+			if cookie == "" {
+				m.err = "Cookie header is required"
+				return m, nil
+			}
+			m.err = ""
+			m.loading = true
+			return m, func() tea.Msg {
+				return AuthSubmitMsg{
+					Cookie: cookie,
 				}
 			}
 		}
@@ -151,7 +135,7 @@ func (m AuthModel) View() string {
 	mutedStyle := m.styles.Muted
 
 	var b strings.Builder
-	b.WriteString(titleStyle.Render("Li-CLI Authentication"))
+	b.WriteString(titleStyle.Render("Endorse Authentication"))
 	b.WriteString("\n\n")
 	b.WriteString(mutedStyle.Render("Extract cookies from your browser DevTools:"))
 	b.WriteString("\n")
@@ -164,17 +148,11 @@ func (m AuthModel) View() string {
 	b.WriteString(mutedStyle.Render("   (Or: paste full header, or just the li_at=... value)"))
 	b.WriteString("\n\n")
 
-	labels := []string{"Cookie Header (required):", "Page Instance (optional):", "X-LI-Track (optional):"}
-	for i, input := range m.inputs {
-		labelStyle := lipgloss.NewStyle().Foreground(m.styles.Theme.Foreground)
-		if i == m.focusIndex {
-			labelStyle = labelStyle.Foreground(m.styles.Theme.Accent).Bold(true)
-		}
-		b.WriteString(labelStyle.Render(labels[i]))
-		b.WriteString("\n")
-		b.WriteString(input.View())
-		b.WriteString("\n\n")
-	}
+	labelStyle := lipgloss.NewStyle().Foreground(m.styles.Theme.Accent).Bold(true)
+	b.WriteString(labelStyle.Render("Cookie Header:"))
+	b.WriteString("\n")
+	b.WriteString(m.inputs[authInputCookie].View())
+	b.WriteString("\n\n")
 
 	if m.err != "" {
 		errStyle := lipgloss.NewStyle().Foreground(m.styles.Theme.Error)
@@ -185,7 +163,7 @@ func (m AuthModel) View() string {
 	if m.loading {
 		b.WriteString(m.styles.AccentText.Render("Validating credentials..."))
 	} else {
-		b.WriteString(mutedStyle.Render("Press Enter to authenticate  |  Tab to switch fields"))
+		b.WriteString(mutedStyle.Render("Press Enter to authenticate"))
 	}
 
 	contentWidth := m.width - 8

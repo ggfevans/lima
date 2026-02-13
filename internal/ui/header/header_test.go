@@ -30,8 +30,8 @@ func TestDefaultState(t *testing.T) {
 	m.SetWidth(80)
 
 	output := stripAnsi(m.View())
-	if !strings.Contains(output, "Li-CLI") {
-		t.Errorf("expected view to contain 'Li-CLI', got:\n%s", output)
+	if !strings.Contains(output, "Endorse") {
+		t.Errorf("expected view to contain 'Endorse', got:\n%s", output)
 	}
 	if !strings.Contains(output, "★") {
 		t.Errorf("expected view to contain '★' indicator, got:\n%s", output)

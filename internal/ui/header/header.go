@@ -44,7 +44,7 @@ func (m *Model) SetStyles(s styles.Styles) {
 
 // View renders the header.
 func (m Model) View() string {
-	logo := m.styles.AccentText.Render("Li-CLI")
+	logo := m.styles.AccentText.Render("Endorse")
 
 	var parts []string
 	parts = append(parts, logo)

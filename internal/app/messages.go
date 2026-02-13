@@ -35,6 +35,11 @@ type ProgramRefMsg struct {
 // ClearErrorMsg clears the error display.
 type ClearErrorMsg struct{}
 
+// TypingExpiredMsg is sent after the typing indicator timeout.
+type TypingExpiredMsg struct {
+	Generation int
+}
+
 // clearErrorAfter returns a command that clears errors after a delay.
 func clearErrorAfter() tea.Cmd {
 	return tea.Tick(5*time.Second, func(_ time.Time) tea.Msg {
