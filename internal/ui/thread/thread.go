@@ -265,10 +265,7 @@ func (m *Model) refreshContent() {
 					senderStyle = m.styles.OwnSenderName
 				}
 
-				header := fmt.Sprintf("%s  %s",
-					senderStyle.Render(msg.Sender),
-					m.styles.Timestamp.Render(msg.Timestamp),
-				)
+				header := senderStyle.Render(msg.Sender)
 				lines = append(lines, header)
 				prevSender = msg.Sender
 			}
@@ -286,6 +283,7 @@ func (m *Model) refreshContent() {
 				lines = append(lines, " "+line)
 			}
 		}
+		lines = append(lines, " "+m.styles.Timestamp.Render(msg.Timestamp))
 	}
 
 	if m.typingName != "" {
