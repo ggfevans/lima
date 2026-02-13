@@ -158,8 +158,8 @@ func (c *DemoClient) scheduleAutoReply(convID string) {
 	}
 	c.mu.Unlock()
 
-	// Send typing indicator 500ms after user sends
-	typingTimer := time.AfterFunc(500*time.Millisecond, func() {
+	// Send typing indicator 800ms after user sends
+	typingTimer := time.AfterFunc(800*time.Millisecond, func() {
 		c.mu.Lock()
 		p := c.program
 		c.mu.Unlock()
@@ -172,8 +172,8 @@ func (c *DemoClient) scheduleAutoReply(convID string) {
 		})
 	})
 
-	// Send reply at 1.5s
-	timer := time.AfterFunc(1500*time.Millisecond, func() {
+	// Send reply at 3s
+	timer := time.AfterFunc(3*time.Second, func() {
 		c.mu.Lock()
 		p := c.program
 		c.mu.Unlock()
