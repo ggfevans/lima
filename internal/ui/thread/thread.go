@@ -238,25 +238,33 @@ func (m *Model) refreshContent() {
 	accentBar := lipgloss.NewStyle().Foreground(m.styles.Theme.OwnSender).Render("▎")
 	divider := m.styles.Muted.Render(strings.Repeat("─", contentWidth-2))
 
+	// Skip first sender header if it matches the conversation title (1:1 chat)
+	skipFirstSender := len(m.messages) > 0 && m.messages[0].Sender == m.subject
+
 	var lines []string
 	var prevSender string
 	for _, msg := range m.messages {
 		if msg.Sender != prevSender {
-			if prevSender != "" {
-				lines = append(lines, divider)
-			}
+			if prevSender == "" && skipFirstSender {
+				// First sender matches title — skip redundant header
+				prevSender = msg.Sender
+			} else {
+				if prevSender != "" {
+					lines = append(lines, divider)
+				}
 
-			senderStyle := m.styles.SenderName
-			if msg.IsOwn {
-				senderStyle = m.styles.OwnSenderName
-			}
+				senderStyle := m.styles.SenderName
+				if msg.IsOwn {
+					senderStyle = m.styles.OwnSenderName
+				}
 
-			header := fmt.Sprintf("%s  %s",
-				senderStyle.Render(msg.Sender),
-				m.styles.Timestamp.Render(msg.Timestamp),
-			)
-			lines = append(lines, header)
-			prevSender = msg.Sender
+				header := fmt.Sprintf("%s  %s",
+					senderStyle.Render(msg.Sender),
+					m.styles.Timestamp.Render(msg.Timestamp),
+				)
+				lines = append(lines, header)
+				prevSender = msg.Sender
+			}
 		}
 
 		prefix := " "
