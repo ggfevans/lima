@@ -3,12 +3,22 @@ package thread
 import (
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/viewport"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/ggfevans/endorse/internal/ui/compose"
 	"github.com/ggfevans/endorse/internal/ui/styles"
 	"github.com/ggfevans/endorse/internal/util"
 )
+
+// typingDots is a custom spinner for the typing indicator.
+var typingDots = spinner.Spinner{
+	Frames: []string{"●··", "·●·", "··●", "·●·"},
+	FPS:    300 * time.Millisecond,
+}
 
 // Message represents a single message in a thread.
 type Message struct {
@@ -29,12 +39,23 @@ type Model struct {
 	messages       []Message
 	conversationID string
 	viewport       viewport.Model
+	typingName     string        // who is typing ("" = nobody)
+	typingSpinner  spinner.Model // animation driver
+	compose        *compose.Model
 }
 
 // New creates a new thread model.
 func New(s styles.Styles) Model {
 	vp := viewport.New(0, 0)
-	return Model{styles: s, viewport: vp}
+	sp := spinner.New()
+	sp.Spinner = typingDots
+	sp.Style = lipgloss.NewStyle().Foreground(s.Theme.Accent)
+	return Model{styles: s, viewport: vp, typingSpinner: sp}
+}
+
+// SetCompose sets the compose model reference for embedded rendering.
+func (m *Model) SetCompose(c *compose.Model) {
+	m.compose = c
 }
 
 // SetSize updates dimensions.
@@ -45,7 +66,12 @@ func (m *Model) SetSize(w, h int) {
 	if contentWidth < 1 {
 		contentWidth = 1
 	}
-	visibleH := h - 2 - 1 // border + title line
+	composeH := 0
+	if m.conversationID != "" && m.compose != nil {
+		composeH = 4 // textarea (3 lines) + divider (1 line)
+		m.compose.SetSize(contentWidth, 3)
+	}
+	visibleH := h - 2 - 1 - composeH // border + title line - compose
 	if visibleH < 1 {
 		visibleH = 1
 	}
@@ -73,8 +99,46 @@ func (m *Model) SetConversation(id, subject string) {
 	m.conversationID = id
 	m.subject = subject
 	m.messages = nil
-	m.viewport.SetContent("")
+	m.typingName = ""
+	m.refreshContent()
 	m.viewport.GotoTop()
+}
+
+// SetTyping shows the typing indicator and starts animation.
+// Returns a Cmd to start the spinner ticker.
+func (m *Model) SetTyping(name string) tea.Cmd {
+	wasTyping := m.typingName != ""
+	m.typingName = name
+	m.refreshContent()
+	if !wasTyping {
+		m.viewport.GotoBottom()
+	}
+	return m.typingSpinner.Tick
+}
+
+// ClearTyping hides the typing indicator.
+func (m *Model) ClearTyping() {
+	if m.typingName == "" {
+		return
+	}
+	m.typingName = ""
+	m.refreshContent()
+}
+
+// IsTyping returns whether a typing indicator is active.
+func (m Model) IsTyping() bool {
+	return m.typingName != ""
+}
+
+// Update handles spinner tick messages.
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if m.typingName == "" {
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.typingSpinner, cmd = m.typingSpinner.Update(msg)
+	m.refreshContent()
+	return m, cmd
 }
 
 // ConversationID returns the current conversation ID.
@@ -131,7 +195,7 @@ func (m Model) View() string {
 	}
 
 	if m.conversationID == "" {
-		// No conversation selected — show placeholder
+		// No conversation selected — show placeholder, no compose
 		placeholder := "\n" + m.styles.Muted.Render("  Select a conversation")
 		innerHeight := m.height - 2
 		content := title + "\n" + placeholder
@@ -139,26 +203,30 @@ func (m Model) View() string {
 		return border.Width(m.width - 2).Render(content)
 	}
 
-	if len(m.messages) == 0 {
-		// Conversation selected but no messages
-		placeholder := "\n" + m.styles.Muted.Render("  No messages")
-		innerHeight := m.height - 2
-		content := title + "\n" + placeholder
-		content = util.PadToHeight(content, innerHeight)
-		return border.Width(m.width - 2).Render(content)
+	// Build content: title + viewport + compose
+	innerHeight := m.height - 2 // subtract top/bottom border
+	composeView := ""
+	composeH := 0
+	if m.compose != nil {
+		composeDivider := m.styles.Muted.Render(strings.Repeat("─", contentWidth))
+		composeView = "\n" + composeDivider + "\n" + m.compose.View()
+		composeH = 4 // divider + textarea
 	}
 
-	// Render viewport content
-	innerHeight := m.height - 2 // subtract top/bottom border
 	content := title + "\n" + m.viewport.View()
-	content = util.PadToHeight(content, innerHeight)
+	content = util.PadToHeight(content, innerHeight-composeH)
+	content += composeView
 	return border.Width(m.width - 2).Render(content)
 }
 
 // refreshContent rebuilds the viewport content string from messages.
 func (m *Model) refreshContent() {
 	if len(m.messages) == 0 {
-		m.viewport.SetContent("")
+		if m.conversationID != "" {
+			m.viewport.SetContent(m.styles.Muted.Render("  No messages"))
+		} else {
+			m.viewport.SetContent("")
+		}
 		return
 	}
 
@@ -196,6 +264,14 @@ func (m *Model) refreshContent() {
 			prefix = accentBar
 		}
 		lines = append(lines, prefix+msg.Body)
+	}
+
+	if m.typingName != "" {
+		if len(lines) > 0 {
+			lines = append(lines, divider)
+		}
+		typingText := m.styles.Muted.Render(m.typingName+" is typing ") + m.typingSpinner.View()
+		lines = append(lines, typingText)
 	}
 
 	m.viewport.SetContent(strings.Join(lines, "\n"))

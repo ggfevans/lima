@@ -147,6 +147,84 @@ func TestScrollPercent(t *testing.T) {
 	}
 }
 
+func TestSetTyping(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+	m.SetMessages(sampleMessages())
+
+	cmd := m.SetTyping("Alice")
+	if cmd == nil {
+		t.Error("expected SetTyping to return a non-nil Cmd")
+	}
+	if !m.IsTyping() {
+		t.Error("expected IsTyping()=true after SetTyping")
+	}
+}
+
+func TestClearTyping(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+	m.SetMessages(sampleMessages())
+
+	m.SetTyping("Alice")
+	m.ClearTyping()
+	if m.IsTyping() {
+		t.Error("expected IsTyping()=false after ClearTyping")
+	}
+}
+
+func TestClearTypingNoop(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	// ClearTyping on a model that isn't typing should not panic
+	m.ClearTyping()
+	if m.IsTyping() {
+		t.Error("expected IsTyping()=false when never set")
+	}
+}
+
+func TestTypingIndicatorInView(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+	m.SetMessages(sampleMessages())
+
+	m.SetTyping("Alice")
+	output := stripAnsi(m.View())
+	if !strings.Contains(output, "Alice is typing") {
+		t.Errorf("expected view to contain 'Alice is typing', got:\n%s", output)
+	}
+}
+
+func TestTypingNotShownWhenEmpty(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+	m.SetMessages(sampleMessages())
+
+	// No typing set — should not show "is typing"
+	output := stripAnsi(m.View())
+	if strings.Contains(output, "is typing") {
+		t.Errorf("expected view NOT to contain 'is typing' when nobody is typing, got:\n%s", output)
+	}
+}
+
+func TestSetConversationClearsTyping(t *testing.T) {
+	m := newTestThread()
+	m.SetSize(60, 20)
+	m.SetConversation("conv-1", "Chat")
+	m.SetMessages(sampleMessages())
+	m.SetTyping("Alice")
+
+	// Switch to a different conversation
+	m.SetConversation("conv-2", "Other Chat")
+	if m.IsTyping() {
+		t.Error("expected IsTyping()=false after SetConversation")
+	}
+}
+
 func TestClear(t *testing.T) {
 	m := newTestThread()
 	m.SetSize(60, 20)
