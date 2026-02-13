@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewModel(t *testing.T) {
-	m := New()
+	m := New(Options{})
 	// New() should return a valid Model without panicking.
 	// The initial state should be either StateAuth or StateLoading depending
 	// on whether credentials are stored on disk.
@@ -17,14 +17,14 @@ func TestNewModel(t *testing.T) {
 }
 
 func TestModelInit(t *testing.T) {
-	m := New()
+	m := New(Options{})
 	// Init() should return without panicking. The returned command may be nil
 	// (no stored credentials) or a validation command (stored credentials).
 	_ = m.Init()
 }
 
 func TestModelView_BeforeReady(t *testing.T) {
-	m := New()
+	m := New(Options{})
 	// Before receiving a WindowSizeMsg, ready is false, so View() should
 	// return the loading placeholder.
 	got := m.View()
@@ -34,7 +34,7 @@ func TestModelView_BeforeReady(t *testing.T) {
 }
 
 func TestModelUpdate_WindowSize(t *testing.T) {
-	m := New()
+	m := New(Options{})
 	msg := tea.WindowSizeMsg{Width: 120, Height: 40}
 	result, _ := m.Update(msg)
 	// After processing a WindowSizeMsg, the model should be ready and

@@ -9,7 +9,6 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ggfevans/endorse/internal/ui/compose"
 	"github.com/ggfevans/endorse/internal/ui/styles"
 	"github.com/ggfevans/endorse/internal/util"
 )
@@ -41,7 +40,8 @@ type Model struct {
 	viewport       viewport.Model
 	typingName     string        // who is typing ("" = nobody)
 	typingSpinner  spinner.Model // animation driver
-	compose        *compose.Model
+	composeView    string        // pre-rendered compose view
+	hasCompose     bool          // whether compose is embedded
 }
 
 // New creates a new thread model.
@@ -53,9 +53,10 @@ func New(s styles.Styles) Model {
 	return Model{styles: s, viewport: vp, typingSpinner: sp}
 }
 
-// SetCompose sets the compose model reference for embedded rendering.
-func (m *Model) SetCompose(c *compose.Model) {
-	m.compose = c
+// SetComposeView sets the pre-rendered compose view for embedded rendering.
+func (m *Model) SetComposeView(view string) {
+	m.composeView = view
+	m.hasCompose = true
 }
 
 // SetSize updates dimensions.
@@ -67,9 +68,8 @@ func (m *Model) SetSize(w, h int) {
 		contentWidth = 1
 	}
 	composeH := 0
-	if m.conversationID != "" && m.compose != nil {
+	if m.conversationID != "" && m.hasCompose {
 		composeH = 4 // textarea (3 lines) + divider (1 line)
-		m.compose.SetSize(contentWidth, 3)
 	}
 	visibleH := h - 2 - 1 - composeH // border + title line - compose
 	if visibleH < 1 {
@@ -205,17 +205,17 @@ func (m Model) View() string {
 
 	// Build content: title + viewport + compose
 	innerHeight := m.height - 2 // subtract top/bottom border
-	composeView := ""
+	composeSection := ""
 	composeH := 0
-	if m.compose != nil {
+	if m.hasCompose {
 		composeDivider := m.styles.Muted.Render(strings.Repeat("─", contentWidth))
-		composeView = "\n" + composeDivider + "\n" + m.compose.View()
+		composeSection = "\n" + composeDivider + "\n" + m.composeView
 		composeH = 4 // divider + textarea
 	}
 
 	content := title + "\n" + m.viewport.View()
 	content = util.PadToHeight(content, innerHeight-composeH)
-	content += composeView
+	content += composeSection
 	return border.Width(m.width - 2).Render(content)
 }
 

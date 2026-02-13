@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/rs/zerolog"
@@ -51,8 +52,9 @@ type Model struct {
 	confirmModal modal.ConfirmModel
 
 	// LinkedIn client
-	client *linkedin.Client
-	ctx    context.Context
+	client   linkedin.MessagingClient
+	ctx      context.Context
+	demoMode bool
 
 	// User info
 	username string
@@ -67,21 +69,33 @@ type Model struct {
 
 	// Pending credentials (saved between auth submit and validation)
 	pendingCreds *config.Credentials
+
+	// Typing indicator generation counter (for debouncing expiry timers)
+	typingGeneration int
+}
+
+// Options configures the application.
+type Options struct {
+	DemoMode bool
 }
 
 // New creates a new application model.
-func New() Model {
+func New(opts Options) Model {
 	cfg, _ := config.Load()
 	theme := config.ThemeByName(cfg.ThemeName)
 	s := styles.New(theme)
-	creds, _ := config.LoadCredentials()
 
 	noop := zerolog.Nop()
 	ctx := noop.WithContext(context.Background())
 
 	startState := StateAuth
-	if !creds.IsEmpty() {
+	if opts.DemoMode {
 		startState = StateLoading
+	} else {
+		creds, _ := config.LoadCredentials()
+		if !creds.IsEmpty() {
+			startState = StateLoading
+		}
 	}
 
 	m := Model{
@@ -91,6 +105,7 @@ func New() Model {
 		theme:        theme,
 		styles:       s,
 		ctx:          ctx,
+		demoMode:     opts.DemoMode,
 		header:       header.New(s),
 		statusBar:    statusbar.New(s),
 		convList:     convlist.New(s),
@@ -100,11 +115,21 @@ func New() Model {
 		confirmModal: modal.NewConfirm(s),
 	}
 
+	m.thread.SetComposeView(m.compose.View())
+
+	if opts.DemoMode {
+		m.client = linkedin.NewDemoClient()
+	}
+
 	return m
 }
 
 // Init implements tea.Model.
 func (m Model) Init() tea.Cmd {
+	if m.demoMode {
+		return m.client.ValidateAuth()
+	}
+
 	creds, _ := config.LoadCredentials()
 	if !creds.IsEmpty() {
 		// Try to validate stored credentials
@@ -182,8 +207,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.handleRealtimeMessage(msg)
 
 	case linkedin.RealtimeTypingMsg:
-		// Could show typing indicator in thread
+		if msg.ConversationID != m.thread.ConversationID() {
+			return m, nil
+		}
+		m.typingGeneration++
+		gen := m.typingGeneration
+		spinnerCmd := m.thread.SetTyping(msg.SenderName)
+		expiryCmd := tea.Tick(5*time.Second, func(_ time.Time) tea.Msg {
+			return TypingExpiredMsg{Generation: gen}
+		})
+		return m, tea.Batch(spinnerCmd, expiryCmd)
+
+	case TypingExpiredMsg:
+		if msg.Generation == m.typingGeneration {
+			m.thread.ClearTyping()
+		}
 		return m, nil
+
+	case spinner.TickMsg:
+		var cmd tea.Cmd
+		m.thread, cmd = m.thread.Update(msg)
+		return m, cmd
 
 	case linkedin.RealtimeConnectedMsg:
 		m.header.SetConnected(true)
@@ -242,25 +286,23 @@ func (m Model) handleAuthValidated(msg linkedin.AuthValidatedMsg) (tea.Model, te
 	m.header.SetUsername(m.username)
 	m.statusBar.SetUsername(m.username)
 
-	// Determine credentials source: pending (from auth modal) or stored (from disk)
-	var creds config.Credentials
-	if m.pendingCreds != nil {
-		creds = *m.pendingCreds
-		// Save newly validated credentials
-		_ = config.SaveCredentials(creds)
-		m.pendingCreds = nil
-	} else {
-		creds, _ = config.LoadCredentials()
-	}
-
-	// Recreate client with proper URN
-	newClient, err := linkedin.NewWithURN(m.ctx, creds.Cookie, creds.PageInstance, creds.XLiTrack, msg.UserURN)
-	if err == nil {
-		// Preserve program reference if the old client had one
-		if m.client != nil {
-			// The program reference will be set via ProgramRefMsg
+	if !m.demoMode {
+		// Determine credentials source: pending (from auth modal) or stored (from disk)
+		var creds config.Credentials
+		if m.pendingCreds != nil {
+			creds = *m.pendingCreds
+			// Save newly validated credentials
+			_ = config.SaveCredentials(creds)
+			m.pendingCreds = nil
+		} else {
+			creds, _ = config.LoadCredentials()
 		}
-		m.client = newClient
+
+		// Recreate client with proper URN
+		newClient, err := linkedin.NewWithURN(m.ctx, creds.Cookie, creds.PageInstance, creds.XLiTrack, msg.UserURN)
+		if err == nil {
+			m.client = newClient
+		}
 	}
 
 	m.state = StateMessaging
@@ -359,6 +401,11 @@ func (m Model) handleMessageSent(msg linkedin.MessageSentMsg) (tea.Model, tea.Cm
 }
 
 func (m Model) handleRealtimeMessage(msg linkedin.RealtimeMessageMsg) (tea.Model, tea.Cmd) {
+	// Clear typing indicator if message is for the active conversation
+	if msg.ConversationID == m.thread.ConversationID() {
+		m.thread.ClearTyping()
+	}
+
 	// If the message is for the currently viewed conversation, append it
 	if msg.ConversationID == m.thread.ConversationID() {
 		m.thread.AppendMessage(thread.Message{
@@ -482,7 +529,7 @@ func (m Model) handleThreadKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m Model) handleComposeKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch {
 	case isEscapeKey(msg):
-		m.compose.Deactivate()
+		m.compose.Blur()
 		m.setFocus(FocusThread)
 		return m, nil
 	case isSendKey(msg):
@@ -504,6 +551,7 @@ func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
 	}
 
 	m.thread.SetConversation(conv.ID, conv.Name)
+	m.compose.SetRecipient(conv.Name)
 	m.setFocus(FocusThread)
 
 	var cmds []tea.Cmd
@@ -646,8 +694,7 @@ func (m Model) sendMessage() (tea.Model, tea.Cmd) {
 
 	convID := m.thread.ConversationID()
 	m.compose.Reset()
-	m.compose.Deactivate()
-	m.setFocus(FocusThread)
+	// Stay in compose focus — don't deactivate
 
 	if m.client != nil {
 		urn := m.findConversationURN(convID)
@@ -710,7 +757,7 @@ func (m *Model) cycleFocusBackward() {
 func (m Model) availablePanels() []FocusedPanel {
 	switch m.dims.Mode {
 	case layout.TwoPanel:
-		if m.compose.Active() {
+		if m.thread.HasConversation() {
 			return []FocusedPanel{FocusConvList, FocusThread, FocusCompose}
 		}
 		return []FocusedPanel{FocusConvList, FocusThread}
@@ -741,14 +788,15 @@ func (m *Model) updateSizes() {
 	m.header.SetWidth(m.dims.Width)
 	m.statusBar.SetWidth(m.dims.Width)
 
-	composeH := m.compose.ComposeHeight()
-	contentH := m.dims.ContentHeight - composeH
-
+	contentH := m.dims.ContentHeight
 	m.convList.SetSize(m.dims.ConvListWidth, contentH)
+	m.thread.SetSize(m.dims.ThreadWidth, contentH)
 
-	threadW := m.dims.ThreadWidth
-	m.thread.SetSize(threadW, contentH)
-	m.compose.SetSize(threadW, 5)
+	composeW := m.dims.ThreadWidth - 4 // match thread content width
+	if composeW < 1 {
+		composeW = 1
+	}
+	m.compose.SetSize(composeW, 3)
 }
 
 // View implements tea.Model.
@@ -778,16 +826,18 @@ func (m Model) View() string {
 		return m.confirmModal.View()
 	}
 
-	// Messaging state
+	// Messaging state — update thread's compose view before rendering
+	m.thread.SetComposeView(m.compose.View())
+
 	var contentView string
 	switch m.dims.Mode {
 	case layout.TwoPanel:
 		contentView = lipgloss.JoinHorizontal(lipgloss.Top,
 			m.convList.View(),
-			m.threadWithCompose(),
+			m.thread.View(),
 		)
 	case layout.SinglePanel:
-		contentView = m.threadWithCompose()
+		contentView = m.thread.View()
 	}
 
 	headerView := m.header.View()
@@ -798,14 +848,4 @@ func (m Model) View() string {
 		contentView,
 		statusView,
 	)
-}
-
-func (m Model) threadWithCompose() string {
-	if m.compose.Active() {
-		return lipgloss.JoinVertical(lipgloss.Left,
-			m.thread.View(),
-			m.compose.View(),
-		)
-	}
-	return m.thread.View()
 }
