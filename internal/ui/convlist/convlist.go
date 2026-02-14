@@ -2,6 +2,7 @@ package convlist
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/ggfevans/endorse/internal/ui/styles"
@@ -203,7 +204,7 @@ func (m Model) View() string {
 				if gap < 1 {
 					gap = 1
 				}
-				line = prefix + nameStyle.Render(name) + lipgloss.NewStyle().Width(gap).Render("") + m.styles.Muted.Render(ts)
+				line = prefix + nameStyle.Render(name) + strings.Repeat(" ", gap) + m.styles.Muted.Render(ts)
 			}
 
 			previewLine := "  " + m.styles.Muted.Render(preview)

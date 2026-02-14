@@ -532,7 +532,9 @@ func (m Model) handleThreadKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			return m, cmd
 		}
 	case isEscapeKey(msg):
+		cmd := m.markCurrentConversationRead()
 		m.setFocus(FocusConvList)
+		return m, cmd
 	}
 	return m, nil
 }
@@ -556,9 +558,12 @@ func (m Model) handleComposeKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 // --- Actions ---
 
 func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
+	// Mark previous conversation read before switching
+	markReadCmd := m.markCurrentConversationRead()
+
 	conv, ok := m.convList.SelectedConversation()
 	if !ok {
-		return m, nil
+		return m, markReadCmd
 	}
 
 	m.thread.SetConversation(conv.ID, conv.Name)
@@ -576,6 +581,9 @@ func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
 	m.updateFilterCounts()
 
 	var cmds []tea.Cmd
+	if markReadCmd != nil {
+		cmds = append(cmds, markReadCmd)
+	}
 	if composeCmd != nil {
 		cmds = append(cmds, composeCmd)
 	}
@@ -588,6 +596,28 @@ func (m Model) openSelectedConversation() (tea.Model, tea.Cmd) {
 	}
 
 	return m, tea.Batch(cmds...)
+}
+
+func (m *Model) markCurrentConversationRead() tea.Cmd {
+	convID := m.thread.ConversationID()
+	if convID == "" {
+		return nil
+	}
+	for i := range m.conversations {
+		if m.conversations[i].ID == convID && m.conversations[i].Unread {
+			m.conversations[i].Unread = false
+			m.applyConversationFilter()
+			m.updateFilterCounts()
+			if m.client != nil {
+				urn := m.findConversationURN(convID)
+				if !urn.IsEmpty() {
+					return m.client.MarkRead(urn)
+				}
+			}
+			break
+		}
+	}
+	return nil
 }
 
 func (m Model) toggleSelectedReadState() (tea.Model, tea.Cmd) {

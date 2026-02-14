@@ -15,15 +15,15 @@ var (
 	demoBrianURN  = linkedingo.NewURN("urn:li:member:demo-brian")
 	demoDanURN    = linkedingo.NewURN("urn:li:member:demo-dan")
 	demoPattiURN  = linkedingo.NewURN("urn:li:member:demo-patti")
-	demoMarcusURN = linkedingo.NewURN("urn:li:member:demo-marcus")
+	demoCoryURN = linkedingo.NewURN("urn:li:member:demo-cory")
 
-	demoConvKarlURN   = linkedingo.NewURN("urn:li:conversation:conv-karl")
-	demoConvHowieURN  = linkedingo.NewURN("urn:li:conversation:conv-howie")
-	demoConvTammyURN  = linkedingo.NewURN("urn:li:conversation:conv-tammy")
-	demoConvBrianURN  = linkedingo.NewURN("urn:li:conversation:conv-brian")
-	demoConvDanURN    = linkedingo.NewURN("urn:li:conversation:conv-dan")
-	demoConvPattiURN  = linkedingo.NewURN("urn:li:conversation:conv-patti")
-	demoConvMarcusURN = linkedingo.NewURN("urn:li:conversation:conv-marcus")
+	demoConvKarlURN  = linkedingo.NewURN("urn:li:conversation:conv-karl")
+	demoConvHowieURN = linkedingo.NewURN("urn:li:conversation:conv-howie")
+	demoConvTammyURN = linkedingo.NewURN("urn:li:conversation:conv-tammy")
+	demoConvBrianURN = linkedingo.NewURN("urn:li:conversation:conv-brian")
+	demoConvDanURN   = linkedingo.NewURN("urn:li:conversation:conv-dan")
+	demoConvPattiURN = linkedingo.NewURN("urn:li:conversation:conv-patti")
+	demoConvCoryURN  = linkedingo.NewURN("urn:li:conversation:conv-cory")
 )
 
 func buildDemoConversations() []DisplayConversation {
@@ -102,14 +102,14 @@ func buildDemoConversations() []DisplayConversation {
 			},
 		},
 		{
-			ID:             demoConvMarcusURN.String(),
-			Title:          "Marcus",
-			LastMessage:    "That was autocorrect. I meant to say I'm going to circle back",
+			ID:             demoConvCoryURN.String(),
+			Title:          "Cory",
+			LastMessage:    "The bones are their money. So are the worms",
 			LastActivityAt: now.Add(-30 * time.Minute),
 			Unread:         true,
-			URN:            demoConvMarcusURN,
+			URN:            demoConvCoryURN,
 			Participants: []DisplayParticipant{
-				{Name: "Marcus", URN: demoMarcusURN},
+				{Name: "Cory", URN: demoCoryURN},
 				{Name: "You", URN: demoOwnURN, IsOwnUser: true},
 			},
 		},
@@ -216,7 +216,7 @@ func buildDemoMessages() map[string][]DisplayMessage {
 				ID:        "msg-brian-1",
 				Sender:    "Brian",
 				SenderURN: demoBrianURN,
-				Body:      "Have you seen CalicosCutPants.com?",
+				Body:      "Have you seen CalicoCutPants.com?",
 				Timestamp: now.Add(-4 * time.Hour),
 			},
 			{
@@ -318,41 +318,41 @@ func buildDemoMessages() map[string][]DisplayMessage {
 				Timestamp: now.Add(-2 * time.Hour),
 			},
 		},
-		demoConvMarcusURN.String(): {
+		demoConvCoryURN.String(): {
 			{
-				ID:        "msg-marcus-1",
-				Sender:    "Marcus",
-				SenderURN: demoMarcusURN,
-				Body:      "Just following up on my follow-up from earlier today",
+				ID:        "msg-cory-1",
+				Sender:    "Cory",
+				SenderURN: demoCoryURN,
+				Body:      "They're trying to shut down Coffin Flop",
 				Timestamp: now.Add(-35 * time.Minute),
 			},
 			{
-				ID:        "msg-marcus-2",
-				Sender:    "Marcus",
-				SenderURN: demoMarcusURN,
-				Body:      "Per my last email, the Q3 deliverables are still TBD pending alignment on the synergies",
+				ID:        "msg-cory-2",
+				Sender:    "Cory",
+				SenderURN: demoCoryURN,
+				Body:      "We bought 200 hours of footage from a funeral home. There's no way to know how many are gonna be in there",
 				Timestamp: now.Add(-34 * time.Minute),
 			},
 			{
-				ID:        "msg-marcus-3",
+				ID:        "msg-cory-3",
 				Sender:    "You",
 				SenderURN: demoOwnURN,
-				Body:      "Which deliverables?",
+				Body:      "What is Coffin Flop?",
 				Timestamp: now.Add(-33 * time.Minute),
 				IsOwn:     true,
 			},
 			{
-				ID:        "msg-marcus-4",
-				Sender:    "Marcus",
-				SenderURN: demoMarcusURN,
-				Body:      "ALL of them. They moved the goalposts again. I'm going to kill",
+				ID:        "msg-cory-4",
+				Sender:    "Cory",
+				SenderURN: demoCoryURN,
+				Body:      "It's a show on Corncob TV. The bodies do all kinds of stuff in there. Sometimes they're nude",
 				Timestamp: now.Add(-31 * time.Minute),
 			},
 			{
-				ID:        "msg-marcus-5",
-				Sender:    "Marcus",
-				SenderURN: demoMarcusURN,
-				Body:      "That was autocorrect. I meant to say I'm going to circle back",
+				ID:        "msg-cory-5",
+				Sender:    "Cory",
+				SenderURN: demoCoryURN,
+				Body:      "The bones are their money. So are the worms",
 				Timestamp: now.Add(-30 * time.Minute),
 			},
 		},
@@ -386,9 +386,9 @@ func buildDemoAutoReplies() map[string][]string {
 			"I also need you to endorse me for 'Tables'",
 			"The website said I'm not allowed to add my own skills anymore",
 		},
-		demoConvMarcusURN.String(): {
-			"Let's take this offline and never speak of it again",
-			"I put a meeting on your calendar. It's 4 hours. No agenda. Good luck",
+		demoConvCoryURN.String(): {
+			"In our world, bones equal dollars",
+			"They'll pull your hair up but not out",
 		},
 	}
 }
@@ -419,12 +419,12 @@ func buildDemoTimeline() []scheduledEvent {
 		},
 		{
 			delay:          20 * time.Second,
-			conversationID: demoConvMarcusURN.String(),
+			conversationID: demoConvCoryURN.String(),
 			message: DisplayMessage{
-				ID:        "msg-marcus-rt-1",
-				Sender:    "Marcus",
-				SenderURN: demoMarcusURN,
-				Body:      "URGENT: Please disregard my previous message. And the one before that. Actually disregard all of them",
+				ID:        "msg-cory-rt-1",
+				Sender:    "Cory",
+				SenderURN: demoCoryURN,
+				Body:      "They said we can't show 'em nude on TV. I didn't do this! The bodies are already falling out of the coffins!",
 				Timestamp: time.Now(),
 			},
 		},

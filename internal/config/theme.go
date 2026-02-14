@@ -40,8 +40,8 @@ var Dracula = Theme{
 	Foreground:    lipgloss.Color("#f8f8f2"),
 	CurrentLine:   lipgloss.Color("#44475a"),
 	Selection:     lipgloss.Color("#44475a"),
-	Comment:       lipgloss.Color("#6272a4"),
-	Subtle:        lipgloss.Color("#6272a4"),
+	Comment:       lipgloss.Color("#7e8eb8"),
+	Subtle:        lipgloss.Color("#8a9bc4"),
 	Primary:       lipgloss.Color("#bd93f9"),
 	Secondary:     lipgloss.Color("#ff79c6"),
 	Success:       lipgloss.Color("#50fa7b"),
@@ -58,31 +58,6 @@ var Dracula = Theme{
 	OwnSender:     lipgloss.Color("#8be9fd"),
 }
 
-// LinkedIn is the light theme using LinkedIn brand colors.
-var LinkedIn = Theme{
-	Name:          "linkedin",
-	Background:    lipgloss.Color("#ffffff"),
-	Foreground:    lipgloss.Color("#000000"),
-	CurrentLine:   lipgloss.Color("#e8f0fe"),
-	Selection:     lipgloss.Color("#d0e4fc"),
-	Comment:       lipgloss.Color("#666666"),
-	Subtle:        lipgloss.Color("#999999"),
-	Primary:       lipgloss.Color("#0a66c2"),
-	Secondary:     lipgloss.Color("#004182"),
-	Success:       lipgloss.Color("#057642"),
-	Warning:       lipgloss.Color("#915907"),
-	Error:         lipgloss.Color("#cc1016"),
-	Info:          lipgloss.Color("#0a66c2"),
-	Accent:        lipgloss.Color("#0a66c2"),
-	AccentDim:     lipgloss.Color("#004182"),
-	Border:        lipgloss.Color("#e0e0e0"),
-	BorderFocused: lipgloss.Color("#0a66c2"),
-	Unread:        lipgloss.Color("#057642"),
-	OwnMessage:    lipgloss.Color("#e8f0fe"),
-	OtherMessage:  lipgloss.Color("#f3f6f8"),
-	OwnSender:     lipgloss.Color("#004182"),
-}
-
 // DefaultTheme returns the default application theme.
 func DefaultTheme() Theme {
 	return Dracula
@@ -91,8 +66,6 @@ func DefaultTheme() Theme {
 // ThemeByName returns a theme by name, falling back to Dracula.
 func ThemeByName(name string) Theme {
 	switch name {
-	case "linkedin", "light":
-		return LinkedIn
 	default:
 		return Dracula
 	}
