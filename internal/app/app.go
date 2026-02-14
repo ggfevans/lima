@@ -136,13 +136,15 @@ func (m Model) Init() tea.Cmd {
 
 	creds, _ := config.LoadCredentials()
 	if !creds.IsEmpty() {
-		// Try to validate stored credentials
+		// Try to validate stored credentials.
+		// Init() has a value receiver so we cannot mutate m here;
+		// all state changes must happen in Update() via messages.
 		client, err := linkedin.New(m.ctx, creds.Cookie, creds.PageInstance, creds.XLiTrack)
 		if err != nil {
-			m.state = StateAuth
-			return nil
+			return func() tea.Msg {
+				return linkedin.AuthFailedMsg{Err: err}
+			}
 		}
-		m.client = client
 		return client.ValidateAuth()
 	}
 	return nil
@@ -248,6 +250,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case linkedin.ConversationDeleteFailedMsg:
 		m.statusBar.SetError("Failed to delete: " + msg.Err.Error())
+		return m, clearErrorAfter()
+
+	case linkedin.MarkReadFailedMsg:
+		m.statusBar.SetError("Failed to mark read: " + msg.Err.Error())
+		return m, clearErrorAfter()
+
+	case linkedin.MarkUnreadFailedMsg:
+		m.statusBar.SetError("Failed to mark unread: " + msg.Err.Error())
 		return m, clearErrorAfter()
 
 	case linkedin.SessionExpiredMsg:
@@ -405,13 +415,9 @@ func (m Model) handleMessageSent(msg linkedin.MessageSentMsg) (tea.Model, tea.Cm
 }
 
 func (m Model) handleRealtimeMessage(msg linkedin.RealtimeMessageMsg) (tea.Model, tea.Cmd) {
-	// Clear typing indicator if message is for the active conversation
+	// If the message is for the currently viewed conversation, clear typing and append
 	if msg.ConversationID == m.thread.ConversationID() {
 		m.thread.ClearTyping()
-	}
-
-	// If the message is for the currently viewed conversation, append it
-	if msg.ConversationID == m.thread.ConversationID() {
 		m.thread.AppendMessage(thread.Message{
 			ID:        msg.Message.ID,
 			Sender:    msg.Message.Sender,

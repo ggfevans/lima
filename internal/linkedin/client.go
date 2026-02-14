@@ -8,7 +8,6 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/rs/zerolog"
 	"go.mau.fi/mautrix-linkedin/pkg/linkedingo"
 )
 
@@ -85,6 +84,14 @@ type ConversationDeletedMsg struct {
 }
 
 type ConversationDeleteFailedMsg struct {
+	Err error
+}
+
+type MarkReadFailedMsg struct {
+	Err error
+}
+
+type MarkUnreadFailedMsg struct {
 	Err error
 }
 
@@ -344,7 +351,7 @@ func (c *Client) MarkRead(conversationURN linkedingo.URN) tea.Cmd {
 	return func() tea.Msg {
 		_, err := c.raw.MarkConversationRead(c.ctx, conversationURN)
 		if err != nil {
-			return nil // silently fail
+			return MarkReadFailedMsg{Err: err}
 		}
 		return nil
 	}
@@ -355,7 +362,7 @@ func (c *Client) MarkUnread(conversationURN linkedingo.URN) tea.Cmd {
 	return func() tea.Msg {
 		_, err := c.raw.MarkConversationUnread(c.ctx, conversationURN)
 		if err != nil {
-			return nil
+			return MarkUnreadFailedMsg{Err: err}
 		}
 		return nil
 	}
@@ -396,8 +403,3 @@ func (c *Client) DeleteConversation(conversationURN linkedingo.URN) tea.Cmd {
 	}
 }
 
-// noopLogger returns a context with a disabled logger.
-func noopLogger() context.Context {
-	noop := zerolog.Nop()
-	return noop.WithContext(context.Background())
-}
