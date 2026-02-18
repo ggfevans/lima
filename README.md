@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/hero.gif" alt="endorse demo" width="960" />
+  <img src="static/hero.gif" alt="endorse demo" width="1470" />
 </p>
 
 # endorse
