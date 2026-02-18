@@ -43,6 +43,12 @@ Launch the TUI:
 endorse
 ```
 
+Try it without a LinkedIn account:
+
+```sh
+endorse --demo
+```
+
 On first launch you'll be prompted for your LinkedIn session cookies. Extract these from your browser's developer tools:
 
 1. Open LinkedIn in your browser
