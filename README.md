@@ -25,9 +25,10 @@ LinkedIn used to have a perfectly good API. Then they closed it. Presumably so t
 - Keyboard-driven navigation
 - Conversation list with unread filtering
 - Threaded message view with grouped sender headers
-- Dracula and LinkedIn color themes
+- Dracula colour theme
 - Compose and reply inline
 - Mark read/unread, delete conversations
+- Typing indicator
 
 ## Installation
 
